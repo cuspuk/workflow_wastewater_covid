@@ -1,0 +1,30 @@
+rule phylo__visualise_phylogenetic_tree:
+    """
+    Infer phylogenetic relationships between aligned sequences
+    :input alignment: Aligned sequences in ALN format
+    :input tree: Phylogenetic tree with distances between sequences
+    :output svg: Phylogenetic tree in SVG format
+    :output ascii: Phylogenetic tree in text format
+    :param model: Model to use for phylo tree generation - see iqtree documentation for more detail
+    """
+    input:
+        alignment = 'reference/{reference}/alignment/{reference}.aln',
+        tree      = 'reference/{reference}/alignment/{reference}.aln.treefile'
+    output:
+        svg       = 'reference/{reference}/alignment/{reference}.aln.treefile.svg',
+        ascii     = 'reference/{reference}/alignment/{reference}.aln.treefile.ascii',
+    threads:
+        int(config['threads'])
+    params:
+        script_path = srcdir('scripts/visualise_phylogenetic_tree.py')
+    conda:
+        config['snakelines_dir'] + '/environments/phylo_custom.yaml'
+    shell:
+        """
+        python3 {params.script_path}\
+            {input.alignment}\
+            {input.tree}\
+            {threads}\
+            {output.svg}\
+            {output.ascii}
+        """

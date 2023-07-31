@@ -1,0 +1,288 @@
+rule qiime2__taxonomy_collapse:
+    """
+    :input table: feature table as produced by dada2
+    :input taxonomy: produced taxonomy as qza
+    :output taxa_collapsed: feature table collapsed at specified taxa level
+    """
+    input:
+        feature_table = 'qiime2/preprocess/denoise/%s/{reference}_table.qza' % pipeline.qiime2_post_taxa,
+        taxonomy = 'qiime2/taxonomy/{reference}_tax.qza'
+    output:
+        taxa_collapsed = 'qiime2/taxonomy/{reference}_tax_collapsed.qza'
+    params:
+        level = method_config.get("taxa_level",6)
+    log:
+        out = 'qiime2/taxonomy/log/lefse/{reference}_taxonomy_collapse.out',
+        err = 'qiime2/taxonomy/log/lefse/{reference}_taxonomy_collapse.err'
+    conda:
+        config['snakelines_dir'] + '/environments/qiime2.yaml'
+    shell:
+        '''
+        qiime taxa collapse \
+            --i-table {input.feature_table} \
+            --o-collapsed-table {output.taxa_collapsed} \
+            --p-level {params.level} \
+            --i-taxonomy {input.taxonomy} \
+            1> {log.out} \
+            2> {log.err}
+        '''
+
+rule qiime2__taxonomy_convert_to_relative_frequency:
+    """
+    :input taxa_collapsed: feature table collapsed at specified taxa level
+    :output taxa_collapsed_relative: the same input feature table, but frequencies converted to relative
+    """
+    input:
+        taxa_collapsed = 'qiime2/taxonomy/{reference}_tax_collapsed.qza'
+    output:
+        taxa_collapsed_relative = 'qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative.qza'
+    log:
+        out = 'qiime2/taxonomy/log/lefse/{reference}_relative_freq.out',
+        err = 'qiime2/taxonomy/log/lefse/{reference}_relative_freq.err'
+    conda:
+        config['snakelines_dir'] + '/environments/qiime2.yaml'
+    shell:
+        '''
+        qiime feature-table relative-frequency \
+            --i-table {input.taxa_collapsed} \
+            --o-relative-frequency-table {output.taxa_collapsed_relative} \
+            1> {log.out} \
+            2> {log.err}
+        '''
+
+rule qiime2__report_export_qza:
+    """
+    Exports feature table with relative frequencies from qza into BIOM format
+    :input qza: qiime artifact
+    :output biom_file: feature table
+    """
+    input:
+        qza = 'qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative.qza'
+    output:
+        biom_file = 'qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative/feature-table.biom',
+        export_dir = directory('qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative/')
+    conda:
+        config['snakelines_dir'] + '/environments/qiime2.yaml'
+    shell:
+        '''
+        qiime tools export \
+            --input-path {input.qza} \
+            --output-path {output.export_dir}
+        '''
+
+rule qiime2__biom_convert_to_txt:
+    """
+    Converts feature table from biom format into tsv and removes redundant BIOM header
+    :input qza: qiime artifact
+    :output tsv_file: feature table with taxas and its relative frequencies in .tsv format
+    """
+    input:
+        biom_file = 'qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative/feature-table.biom'
+    output:
+        tsv_file = 'qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative/feature-table.tsv'
+    params:
+        txt_file = 'qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative/feature-table.txt'
+    log:
+        out = 'qiime2/taxonomy/log/lefse/{reference}_biom_convert.out',
+        err = 'qiime2/taxonomy/log/lefse/{reference}_biom_convert.err'
+    conda:
+        config['snakelines_dir'] + '/environments/biom_format.yaml'
+    shell:
+        '''
+        biom convert \
+            -i {input.biom_file} \
+            -o {params.txt_file} \
+            --to-tsv  \
+            1> {log.out} \
+            2> {log.err};
+
+        tail -n +2 {params.txt_file} >> {output.tsv_file};
+        rm {params.txt_file};
+        '''
+
+rule qiime2_prepare_biom_convert:
+    """
+    Format converted biom file in .tsv to obtain table with metadata information
+    Taxas are rewritten using | instead of ; and also empty taxas are handled
+
+    :input tsv_file: feature table with taxas and its relative frequencies in .tsv format
+    :input metadata: samples metadata filepath in TSV format (tab-separated value), e.g. description/silva16S-sample-metadata.tsv
+    :output tsv_file: modified input feature table with metadata headers and reformatted taxas as required for LEFse
+    """
+    input:
+        tsv_file = 'qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative/feature-table.tsv',
+        metadata = 'description/sample-metadata.tsv'
+    output:
+        tsv_file = 'qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative/feature-table_corr.tsv'
+    log:
+        out = 'qiime2/taxonomy/log/lefse/{reference}_biom_prepare.out',
+        err = 'qiime2/taxonomy/log/lefse/{reference}_biom_prepare.err'
+    params:
+        script = srcdir("lefse_prepare.py"),
+        class_col = method_config.get("class_col",None),
+        subclass_col = None,#'phase',
+        subject_col = None
+    shell:
+        '''
+        python {params.script} \
+            {input.tsv_file} \
+            {input.metadata} \
+            {params.class_col} \
+            {params.subclass_col} \
+            {params.subject_col} \
+            {output.tsv_file}  \
+            1> {log.out} \
+            2> {log.err}
+        '''
+
+rule qiime2__prepare_lefse_input:
+    """
+    Convert the input data matrix to the format for LEfSe.
+
+    Calls 'lefse_format_input.py'.
+
+    :input prepared_table: Formatted feature table with taxa collapsed and given abundances
+    :output lefse_input: Converted input to LEFse input format
+    :output lefse_input_tsv: Converted input to LEFse input format and exported to .tsv
+    """
+    input:
+        prepared_table = 'qiime2/taxonomy/lefse/{reference}_tax_collapsed_relative/feature-table_corr.tsv'
+    output:
+        lefse_input = 'qiime2/analysis/lefse/{reference}.in',
+        lefse_input_tsv = 'qiime2/analysis/lefse/{reference}.tsv'
+    log:
+        out = 'qiime2/analysis/lefse/log/{reference}_lefse_format.out',
+        err = 'qiime2/analysis/lefse/log/{reference}_lefse_format.err'
+    conda:
+        config['snakelines_dir'] + '/environments/lefse.yaml'
+    shell:
+        '''
+        lefse_format_input.py \
+            {input.prepared_table} \
+            {output.lefse_input} \
+            -c 1 -u 2 -o 1000000 \
+            --output_table {output.lefse_input_tsv} \
+            1> {log.out} \
+            2> {log.err}
+        '''
+
+rule qiime2__run_lefse:
+    """
+    Performs the actual statistical analysis as given in LEFse
+
+    Calls 'lefse_run.py'.
+
+    :input lefse_input: Input taxonomy abundances in LEFse input format
+    :output lefse_result: Results of LEFse statistical analysis, in LEFse unique format
+    """
+    input:
+        lefse_input = 'qiime2/analysis/lefse/{reference}.in'
+    output:
+        lefse_result = 'qiime2/analysis/lefse/{reference}.res'
+    log:
+        out = 'qiime2/analysis/lefse/log/{reference}_lefse_run.out',
+        err = 'qiime2/analysis/lefse/log/{reference}_lefse_run.err'
+    conda:
+        config['snakelines_dir'] + '/environments/lefse.yaml'
+    shell:
+        '''
+        lefse_run.py \
+            {input.lefse_input} \
+            {output.lefse_result} \
+            1> {log.out} \
+            2> {log.err}
+        '''
+
+rule qiime2__pdf_lefse_result:
+    """
+    Visualizes the Lefse statistical results in .pdf format.
+    Plot the list of biomarkers with their effect size.
+
+    Calls 'lefse_plot_res.py'.
+
+    :input lefse_result: Results of LEFse statistical analysis, in LEFse unique format
+    :output lefse_result_pdf: Results of LEFse statistical analysis, in PDF format
+    """
+    input:
+        lefse_result = 'qiime2/analysis/lefse/{reference}.res'
+    output:
+        lefse_result_pdf = 'qiime2/analysis/lefse/result/{reference}.pdf'
+    log:
+        out = 'qiime2/analysis/lefse/log/{reference}_lefse_plot.out',
+        err = 'qiime2/analysis/lefse/log/{reference}_lefse_plot.err'
+    conda:
+        config['snakelines_dir'] + '/environments/lefse.yaml'
+    shell:
+        '''
+        lefse_plot_res.py \
+            {input.lefse_result} \
+            {output.lefse_result_pdf} \
+            --format pdf  \
+            1> {log.out} \
+            2> {log.err}
+        '''
+
+rule qiime2__lefse_cladogram:
+    """
+    Visualizes the output on a hierarchical tree
+    Plot the representation of the biomarkers on the hierarchical tree
+
+    Calls 'lefse_plot_cladogram.py'.
+
+    :input lefse_result: Results of LEFse statistical analysis, in LEFse unique format
+    :output cladogram_out: hierarchical tree representation of the biomarkers, in .pdf format
+    """
+    input:
+        lefse_result = 'qiime2/analysis/lefse/{reference}.res'
+    output:
+        cladogram_out = 'qiime2/analysis/lefse/cladogram/{reference}.pdf'
+    log:
+        out = 'qiime2/analysis/lefse/log/{reference}_lefse_cladogram.out',
+        err = 'qiime2/analysis/lefse/log/{reference}_lefse_cladogram.err'
+    conda:
+        config['snakelines_dir'] + '/environments/lefse.yaml'
+    shell:
+        '''
+        src=$(which lefse_plot_cladogram.py)
+        echo Preparing lefse cladogram $src
+        sed -i --follow-symlinks 's/ax.bar(fr_0,/ax.bar((fr_0+fr_1)\*0.5,/g' $src
+        lefse_plot_cladogram.py \
+            {input.lefse_result} \
+            {output.cladogram_out} \
+            --format pdf  \
+            1> {log.out} \
+            2> {log.err}
+        sed -i --follow-symlinks 's/ax.bar((fr_0+fr_1)\*0.5,/ax.bar(fr_0,/g' $src
+        '''
+
+rule qiime2__lefse_plot_features:
+    """
+    Visualizes the raw-data features. The module for exporting the raw-data representation of the features.
+
+    Calls 'lefse_plot_features.py'.
+
+    :input lefse_input: Input taxonomy abundances in LEFse input format
+    :input lefse_result: Results of LEFse statistical analysis, in LEFse unique format
+    :output lefse_out_dir: directory where the raw-data representation of the discovered biomarkers will be stored
+    """
+    input:
+        lefse_input = 'qiime2/analysis/lefse/{reference}.in',
+        lefse_result = 'qiime2/analysis/lefse/{reference}.res'
+    output:
+        lefse_out_dir = directory('qiime2/analysis/lefse/{reference}_features/')
+    log:
+        out = 'qiime2/analysis/lefse/log/{reference}_lefse_features.out',
+        err = 'qiime2/analysis/lefse/log/{reference}_lefse_features.err'
+    conda:
+        config['snakelines_dir'] + '/environments/lefse.yaml'
+    shell:
+        '''
+        # workaround for the directory bug in LEFSE
+        mkdir {output.lefse_out_dir} 1> {log.out} 2> {log.err};
+        lefse_plot_features.py \
+            {input.lefse_input} \
+            {input.lefse_result} \
+            {output.lefse_out_dir}/ \
+            1>> {log.out} \
+            2>> {log.err};
+        '''

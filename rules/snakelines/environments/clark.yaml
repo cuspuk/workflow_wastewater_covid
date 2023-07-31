@@ -1,0 +1,5 @@
+channels:
+- agbiome
+- nodefaults
+dependencies:
+- clark=1.2.3

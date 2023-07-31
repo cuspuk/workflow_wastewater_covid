@@ -1,0 +1,48 @@
+include: config['snakelines_dir'] + '/rules/shared/reads/preprocess/conversion/unzip.snake'
+
+rule trimmomatic__trim_reads:
+    """
+    Remove low quality ends of reads and then filter reads that are too short.
+    :input r1: Left side of sequenced fragments in gzipped fastq format
+    :output r1: Left side of subsampled fragments without overlap in gzipped fastq format
+    :output r2: Right side of subsampled fragments without overlap in gzipped fastq format
+    :params r1: Temporary unzipped left side of sequenced fragments in gzipped fastq format
+    :params adapter: Parameters of Trimmomatic for adapter clipping
+    :params quality: Parameters of Trimmomatic for clipping of low quality 3` ends of reads
+    :params headcrop: Parameters of Trimmomatic for cutting of pre-selected number of bases from the 5` end of reads
+    :params crop: Parameters of Trimmomatic for cutting of pre-selected number of bases from the 3` end of reads
+    :params minlen: Parameters of Trimmomatic to remove reads that have lower length after trimming
+    """
+    input:
+        r1 = 'reads/%s/{sample}.fastq.gz' % method_config['input_read_type'],
+    output:
+        r1 = configured_temp('reads/trimmed/{sample}.fastq.gz'),
+    params:
+        r1 = 'reads/trimmed/{sample}.fastq',
+        additional = method_config.get('additional_params', ''),
+        quality = 'SLIDINGWINDOW:5:%s' % method_config['quality'] if 'quality' in method_config else '',
+        headcrop = 'HEADCROP:%s' % method_config['headcrop'] if 'headcrop' in method_config else '',
+        crop = 'CROP:%s' % method_config['crop'] if 'crop' in method_config else '',
+        minlen = 'MINLEN:%s' % method_config['minlen'] if 'minlen' in method_config else ''
+    threads:
+        int(config['threads'])
+    log:
+        out = 'reads/trimmed/log/{sample}.log',
+        err = 'reads/trimmed/log/{sample}.err'
+    conda:
+        config['snakelines_dir'] + '/environments/trimmomatic.yaml'
+    shell:
+        """
+        trimmomatic SE \
+            -threads {threads} \
+            -phred33 \
+            {input.r1} \
+            {output.r1} \
+            {params.additional} \
+            {params.crop} \
+            {params.headcrop} \
+            {params.quality} \
+            {params.minlen} \
+        >  {log.out} \
+        2> {log.err}
+        """

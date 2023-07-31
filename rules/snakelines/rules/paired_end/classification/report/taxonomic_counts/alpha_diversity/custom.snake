@@ -1,0 +1,18 @@
+tax_ranks = ['kingdom', 'phylum', 'class', 'order', 'family',
+             'genus', 'species', 'subspecies', 'subsubspecies', 'variety', 'form']
+
+rule custom__alpha_diversity:
+    """
+    Compute aplha diversity at selected taxonomic level, such as genus, species.
+    :input tax_level_abs: Aggregated counts for single taxonomic level, e.g. species, order
+    :output alpha_div: Alpha diversities for single taxonomic level, e.g. species, order; either '_norm'-alized to the same counts or kept '_pure'.
+    """
+    input:
+        tax_level_abs = '{analysis_dir}/{reference}/report/tsv/{tax_level, %s}.counts.tsv' % ('|'.join(tax_ranks[:-1])),
+    output:
+        alpha_div = '{analysis_dir}/{reference}/report/tsv/{tax_level, %s}.alpha{alpha_mode, _norm|_pure}.tsv' % ('|'.join(tax_ranks[:-1])),
+    params:
+        script_path = srcdir('scripts/alpha_diversity.py')
+    conda:
+        config['snakelines_dir'] + '/environments/alpha_diversity.yaml'
+    shell: "python3 {params.script_path} {input.tax_level_abs} {output.alpha_div}"
