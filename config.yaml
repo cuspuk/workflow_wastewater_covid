@@ -23,7 +23,7 @@ reads:                              # Prepare reads and quality reports for down
             method: bowtie2         # Supported values: bowtie2
             temporary: True        # If True, generated files would be removed after successful analysis
             references:             # List of reference genomes
-                - ${decontamination_ref}
+                - ${decontamination_ref_name}
             keep: False              # Keep reads mapped to references (True) or remove them as contamination (False)
 
     report:                         # Summary reports of read characteristics to assess their quality
@@ -62,4 +62,4 @@ report:
 
 sample: ${sample_id}
 reference: ${reference_name}
-lineages_dir: reference/${lineages_dir}
+lineages_dir: ${lineages_dir}
