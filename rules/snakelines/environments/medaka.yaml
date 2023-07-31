@@ -1,0 +1,7 @@
+channels:
+- conda-forge
+- bioconda
+- nodefaults
+dependencies:
+- medaka=1.4.1
+- vcflib=1.0.2

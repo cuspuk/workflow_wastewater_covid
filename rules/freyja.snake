@@ -1,0 +1,57 @@
+import os
+
+
+rule samtools_mpileup_depth:
+    input:
+        bam="mapping/{reference}/{map_type}/{sample}.bam",
+        fasta="reference/{reference}/{reference}.fa",
+    output:
+        depth="freyja/{reference}/{sample}/{map_type}/_freyja.depth",
+    threads: int(config["threads"])
+    conda:
+        "../envs/samtools.yaml"
+    shell:
+        """
+        samtools mpileup -aa -A -d 600000 -Q 20 -q 0 -B -f {input.fasta} {input.bam} | cut -f1-4 > {output.depth};
+        """
+
+
+rule mixture_composition_freyja_variants:
+    input:
+        fasta="reference/{reference}/{reference}.fa",
+        bam="mapping/{reference}/{map_type}/{sample}.bam",
+        depths="freyja/{reference}/{sample}/{map_type}/_freyja.depth",
+    output:
+        variants="freyja/{reference}/{sample}/{map_type}/_freyja.tsv",
+    conda:
+        "../envs/freyja.yaml"
+    shell:
+        """
+        freyja variants {input.bam} --variants {output.variants} --depths {input.depths} --ref {input.fasta};
+        """
+
+
+rule mixture_composition_freyja_demix:
+    input:
+        variants="freyja/{reference}/{sample}/{map_type}/_freyja.tsv",
+        depths="freyja/{reference}/{sample}/{map_type}/_freyja.depth",
+    output:
+        demix="freyja/{reference}/{sample}/{map_type}/_freyja.demix",
+    params:
+        lineages=os.path.join(config["lineages_dir"], "curated_lineages.json"),
+        barcodes=os.path.join(config["lineages_dir"], "usher_barcodes.csv"),
+    conda:
+        "../envs/freyja.yaml"
+    shell:
+        """
+        freyja demix {input.variants} {input.depths} --output {output.demix} --meta {params.lineages} --barcodes {params.barcodes};
+        """
+
+
+rule mixture_composition_freyja_summary:
+    input:
+        demix="freyja/{reference}/{sample}/{map_type}/_freyja.demix",
+    output:
+        summary="freyja/{reference}/{sample}/{map_type}/_freyja.csv",
+    script:
+        "summary.py"

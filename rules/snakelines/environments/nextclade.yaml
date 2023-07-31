@@ -1,0 +1,6 @@
+channels:
+- conda-forge
+- bioconda
+- nodefaults
+dependencies:
+- nextclade=2.12.0

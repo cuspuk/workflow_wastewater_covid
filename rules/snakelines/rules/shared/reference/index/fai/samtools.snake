@@ -1,0 +1,16 @@
+rule samtools__prepare_fai_index:
+    """
+    Index fasta file to quicker retrieve substring sequences
+    :input reference: Genomic sequence file in fasta format to index
+    :output dict: Index for the input reference genomic file
+    """
+    input:
+        reference = '{genome}.fa'
+    output:
+        '{genome}.fa.fai'
+    conda:
+        config['snakelines_dir'] + '/environments/samtools.yaml'
+    shell:
+        """
+        samtools faidx {input.reference}
+        """

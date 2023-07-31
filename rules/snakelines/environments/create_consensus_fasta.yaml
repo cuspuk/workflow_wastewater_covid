@@ -1,0 +1,10 @@
+channels:
+- conda-forge
+- bioconda
+- nodefaults
+dependencies:
+- bedtools=2.30.0
+- bcftools=1.13
+- pyvcf=0.6.8
+- biopython=1.79
+- bedops=2.4.39
