@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/xsitarcik/wastewater_covid/compare/v1.0.2...v1.0.3) (2023-08-05)
+
+
+### Bug Fixes
+
+* freyja fixed to require direct inputs ([31d85d5](https://github.com/xsitarcik/wastewater_covid/commit/31d85d535f70f9064b3ae0a036461d9e2b3f97c6))
+
 ## [1.0.2](https://github.com/xsitarcik/wastewater_covid/compare/v1.0.1...v1.0.2) (2023-08-05)
 
 
