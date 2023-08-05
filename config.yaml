@@ -1,10 +1,10 @@
 sequencing: paired_end
 samples:                             # List of sample categories to be analysed
-    - name: ${sample_id}               # Regex expression of sample names to be analysed (reads/original/example.*_R1.fastq.gz)
+    - name: .*              # Regex expression of sample names to be analysed (reads/original/example.*_R1.fastq.gz)
       reference: ${reference_name}                 # Reference genome for reads in the category (reference/mhv/mhv.fa)
 
-report_dir: ${report_dir} # Generated reports and essential output files would be stored there
-threads: ${threads}                         # Number of threads to use in analysis
+report_dir: report # Generated reports and essential output files would be stored there
+threads: 2                         # Number of threads to use in analysis
 
 reads:                              # Prepare reads and quality reports for downstream analysis
     preprocess:                     # Pre-process of reads, eliminate sequencing artifacts, contamination ...
@@ -23,7 +23,7 @@ reads:                              # Prepare reads and quality reports for down
             method: bowtie2         # Supported values: bowtie2
             temporary: True        # If True, generated files would be removed after successful analysis
             references:             # List of reference genomes
-                - ${decontamination_ref_name}
+                - ${decontamination_ref}
             keep: False              # Keep reads mapped to references (True) or remove them as contamination (False)
 
     report:                         # Summary reports of read characteristics to assess their quality
@@ -60,6 +60,5 @@ report:
     multiqc: True
 
 
-sample: ${sample_id}
 reference: ${reference_name}
 lineages_dir: ${lineages_dir}
