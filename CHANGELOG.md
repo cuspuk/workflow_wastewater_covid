@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/xsitarcik/wastewater_covid/compare/v1.0.0...v1.0.1) (2023-08-05)
+
+
+### Bug Fixes
+
+* freyja automatically parses samples ([b236144](https://github.com/xsitarcik/wastewater_covid/commit/b2361446ec788c06a21197ab3b759efef95b9707))
+
 ## 1.0.0 (2023-07-31)
 
 
