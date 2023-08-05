@@ -18,5 +18,4 @@ for sample_configuration in config.get('samples'):
 rule all:
     input:
         **get_files(outputs),
-        freyja_output = expand(f"freyja/{reference}/{sample}/deduplicatred/_freyja.csv", sample=set(all_samples)),
-
+        freyja_output = expand(f"freyja/{reference}/{{sample}}/deduplicated/_freyja.csv", sample=set(all_samples)),
