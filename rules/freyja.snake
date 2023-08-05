@@ -31,10 +31,21 @@ rule mixture_composition_freyja_variants:
         """
 
 
+rule freyja_update_lineages:
+    output:
+        directory(config['lineages_dir']),
+    wrapper:
+        "../envs/freyja.yaml"
+    shell:
+        '''
+        freyja update --outdir {output}
+        '''
+
 rule mixture_composition_freyja_demix:
     input:
         variants="freyja/{reference}/{sample}/{map_type}/_freyja.tsv",
         depths="freyja/{reference}/{sample}/{map_type}/_freyja.depth",
+        lineages_dir=config['lineages_dir'],
     output:
         demix="freyja/{reference}/{sample}/{map_type}/_freyja.demix",
     params:
