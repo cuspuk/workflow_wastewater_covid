@@ -3,5 +3,5 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - bwa=0.7.17
-  - samtools=1.17
+  - krakentools=1.2
+  - biopython=1.81

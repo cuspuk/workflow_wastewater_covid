@@ -28,8 +28,8 @@ rule custom__infer_and_store_read_group:
 rule bwa__map_reads_to_reference:
     input:
         reads=[
-            "results/reads/decontaminated/{sample}_R1.fastq.gz",
-            "results/reads/decontaminated/{sample}_R2.fastq.gz",
+            "results/reads/trimmed/{sample}_R1.fastq.gz",
+            "results/reads/trimmed/{sample}_R2.fastq.gz",
         ],
         index=get_bwa_index_for_mapping(),
         read_group="results/reads/original/read_group/{sample}.txt",
