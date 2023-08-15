@@ -1,0 +1,23 @@
+from snakemake.utils import min_version
+
+min_version("7.25.0")
+
+
+localrules:
+    all,
+    custom__infer_and_store_read_group,
+
+
+include: "rules/common.smk"
+include: "rules/mapping.smk"
+include: "rules/reads.smk"
+include: "rules/freyja.smk"
+
+
+wildcard_constraints:
+    **get_constraints(),
+
+
+rule all:
+    input:
+        **get_outputs(),

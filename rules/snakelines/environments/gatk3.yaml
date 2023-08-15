@@ -1,5 +1,0 @@
-channels:
-- compbiocore
-- nodefaults
-dependencies:
-- gatk=3.8
