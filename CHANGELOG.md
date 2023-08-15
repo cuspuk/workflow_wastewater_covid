@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/xsitarcik/wastewater_covid/compare/v1.0.3...v2.0.0) (2023-08-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade to new snakemake ([#10](https://github.com/xsitarcik/wastewater_covid/issues/10))
+
+### Features
+
+* upgrade to new snakemake ([#10](https://github.com/xsitarcik/wastewater_covid/issues/10)) ([c8eda1b](https://github.com/xsitarcik/wastewater_covid/commit/c8eda1b19c14719f5e1e869fe144167463c27c42))
+
 ## [1.0.3](https://github.com/xsitarcik/wastewater_covid/compare/v1.0.2...v1.0.3) (2023-08-05)
 
 
