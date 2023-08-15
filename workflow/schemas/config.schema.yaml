@@ -41,6 +41,11 @@ definitions:
         type: object
         "$ref": "#/definitions/KrakenParams"
         default: { "save_memory": true }
+
+      freyja__params:
+        type: object
+        "$ref": "#/definitions/FreyjaParams"
+        default: { "depth_cutoff": 0 }
       resources:
         type: object
         "$ref": "#/definitions/Resources"
@@ -101,6 +106,15 @@ definitions:
         description: "if true, kraken limits RAM memory usage but sacrifices speed"
         default: true
     title: KrakenParams
+  FreyjaParams:
+    type: object
+    additionalProperties: false
+    properties:
+      depth_cutoff:
+        type: integer
+        description: "exclude sites with coverage less than the specified value"
+        default: 0
+    title: FreyjaParams
   ReadsTrimming:
     type: object
     additionalProperties: false

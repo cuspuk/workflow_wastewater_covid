@@ -52,13 +52,15 @@ rule freyja__demix:
     output:
         "results/freyja/{sample}/freyja.demix",
     params:
-        depth_cutoff="5",
+        depth_cutoff="--depthcutoff {val}".format(val=config["freyja__params"]["depth_cutoff"])
+        if config["freyja__params"]["depth_cutoff"] != 0
+        else "",
     log:
         "logs/freyja/demix/{sample}.log",
     conda:
         "../envs/freyja.yaml"
     shell:
-        "freyja demix --depthcutoff {params.depth_cutoff} {input.variants} {input.depths} --output {output} --meta {input.lineages} --barcodes {input.barcodes}"
+        "freyja demix {params.depth_cutoff} {input.variants} {input.depths} --output {output} --meta {input.lineages} --barcodes {input.barcodes}"
 
 
 rule freyja__summary:
