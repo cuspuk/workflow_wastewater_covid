@@ -50,7 +50,7 @@ rule freyja__demix:
         lineages=os.path.join(config["lineages_dir"], "curated_lineages.json"),
         barcodes=os.path.join(config["lineages_dir"], "usher_barcodes.csv"),
     output:
-        demix="results/freyja/{sample}/freyja.demix",
+        "results/freyja/{sample}/freyja.demix",
     log:
         "logs/freyja/demix/{sample}.log",
     conda:
