@@ -10,7 +10,7 @@ rule samtools__mpileup_depth:
     log:
         "logs/samtools/mpileup_depth/{sample}.log",
     shell:
-        "samtools mpileup -aa -A -d 600000 -Q 20 -q 0 -B -f {input.fasta} {input.bam} | cut -f1-4 > {output}"
+        "(samtools mpileup -aa -A -d 600000 -Q 20 -q 0 -B -f {input.fasta} {input.bam} | cut -f1-4 > {output} ) 2> {log}"
 
 
 rule freyja__variants:
@@ -26,7 +26,7 @@ rule freyja__variants:
     log:
         "logs/freyja/variants/{sample}.log",
     shell:
-        "freyja variants {input.bam} --variants {output} --depths {input.depths} --ref {input.fasta}"
+        "freyja variants {input.bam} --variants {output} --depths {input.depths} --ref {input.fasta} > {log} 2>&1"
 
 
 rule freyja__update_lineages:
@@ -60,7 +60,8 @@ rule freyja__demix:
     conda:
         "../envs/freyja.yaml"
     shell:
-        "freyja demix {params.depth_cutoff} {input.variants} {input.depths} --output {output} --meta {input.lineages} --barcodes {input.barcodes}"
+        "freyja demix {params.depth_cutoff} {input.variants} {input.depths} --output {output}"
+        " --meta {input.lineages} --barcodes {input.barcodes} > {log} 2>$1"
 
 
 rule freyja__summary:

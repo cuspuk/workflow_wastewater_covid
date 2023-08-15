@@ -1,3 +1,8 @@
+import sys
+
+sys.stderr = open(snakemake.log[0], "w")
+
+
 def freyja_tsv(file_path: str, sample_name: str, out_path: str):
     occurrences: dict[str, dict[str, str]] = {}
     sample_res: dict[str, str] = {}
@@ -24,4 +29,5 @@ def freyja_tsv(file_path: str, sample_name: str, out_path: str):
         file.write("\n")
 
 
-freyja_tsv(snakemake.input.demix, snakemake.wildcards.sample, snakemake.output.summary)  # type: ignore # noqa: F821
+if __name__ == "__main__":
+    freyja_tsv(snakemake.input.demix, snakemake.wildcards.sample, snakemake.output.summary)
