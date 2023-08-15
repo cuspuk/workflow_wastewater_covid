@@ -51,12 +51,14 @@ rule freyja__demix:
         barcodes=os.path.join(config["lineages_dir"], "usher_barcodes.csv"),
     output:
         "results/freyja/{sample}/freyja.demix",
+    params:
+        depth_cutoff="5",
     log:
         "logs/freyja/demix/{sample}.log",
     conda:
         "../envs/freyja.yaml"
     shell:
-        "freyja demix {input.variants} {input.depths} --output {output} --meta {input.lineages} --barcodes {input.barcodes}"
+        "freyja demix --depthcutoff {params.depth_cutoff} {input.variants} {input.depths} --output {output} --meta {input.lineages} --barcodes {input.barcodes}"
 
 
 rule freyja__summary:
