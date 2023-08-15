@@ -29,14 +29,19 @@ rule bwa__filter_reads_from_reference_pe:
         r1="results/reads/decontaminated/{sample}_R1.fastq.gz",
         r2="results/reads/decontaminated/{sample}_R2.fastq.gz",
     params:
-        indices=lambda w, input: [os.path.splitext(input.index[0])[0]],
-        keep_param="-F 2",
+        index=lambda w, input: [os.path.splitext(input.index[0])[0]],
+        keep_param="-f 2" if config["reads__decontamination"]["keep"] else "-F 2",
         sample=lambda w, input: os.path.basename(input.r1).replace("_R1.fastq.gz", ""),
     threads: min(config["threads"]["decontamination"], config["max_threads"])
     log:
         "logs/bwa/filter_reads_from_reference/{sample}.log",
-    wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.9/wrappers/bwa/filter"
+    conda:
+        "../envs/bwa_samtools.yaml"
+    shell:
+        "( bwa mem -t {threads} {params.index} {input.r1} {input.r2}"
+        " | samtools collate -O -u -@ {threads} - STDOUT"
+        " | samtools fastq -1 {output.r1} -2 {output.r2} {params.keep_param}"
+        " -0 /dev/null -s /dev/null -t -n ) > {log} 2>&1"
 
 
 rule fastqc__quality_report:
