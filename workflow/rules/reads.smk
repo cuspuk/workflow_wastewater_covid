@@ -29,7 +29,7 @@ rule bwa__filter_reads_from_reference_pe:
         r1="results/reads/decontaminated/{sample}_R1.fastq.gz",
         r2="results/reads/decontaminated/{sample}_R2.fastq.gz",
     params:
-        indices=lambda w, input: [os.path.dirname(input.index[0])],
+        indices=lambda w, input: [os.path.splitext(input.index[0])[0]],
         keep_param="-F 2",
         sample=lambda w, input: os.path.basename(input.r1).replace("_R1.fastq.gz", ""),
     threads: min(config["threads"]["decontamination"], config["max_threads"])
