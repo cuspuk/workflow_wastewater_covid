@@ -12,7 +12,7 @@ rule curl__download_kraken_db:
     conda:
         "../envs/curl.yaml"
     shell:
-        "(mkdir -p {params.dirpath} && curl -SL {params.url} | tar zxvf - -C {params.dirpath}) 2> {log}"
+        "(mkdir -p {params.dirpath} && curl -SL {params.url} | tar zxvf - -C {params.dirpath}) > {log} 2>&1"
 
 
 rule kraken__analysis:
