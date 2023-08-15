@@ -15,9 +15,9 @@ definitions:
       adapters_fasta:
         type: string
         description: "Path to the adapters fasta file"
-      decontamination_ref:
+      kraken_dir:
         type: string
-        description: "Directory with reference .fasta file used to decontaminate input reads"
+        description: "Directory with the kraken DB files. If does not exist, the workflow tries to download DB by using the basename"
       lineages_dir:
         type: string
         description: "Directory with lineages to infer variants"
@@ -37,7 +37,10 @@ definitions:
       reads__decontamination:
         type: object
         "$ref": "#/definitions/ReadsDecontamination"
-        default: { "keep": false }
+      kraken__params:
+        type: object
+        "$ref": "#/definitions/KrakenParams"
+        default: { "save_memory": true }
       resources:
         type: object
         "$ref": "#/definitions/Resources"
@@ -59,12 +62,12 @@ definitions:
             "fastqc": 1,
             "mapping": 1,
             "bam_index": 1,
-            "decontamination": 1,
+            "kraken": 1,
           }
     required:
       - pepfile
       - mapping_ref
-      - decontamination_ref
+      - kraken_dir
       - lineages_dir
       - adapters_fasta
       - threads
@@ -74,10 +77,30 @@ definitions:
     type: object
     additionalProperties: false
     properties:
-      keep:
+      exclude_taxa_ids:
+        type: array
+        description: "list of taxonomy IDs to exclude"
+        items:
+          type: integer
+      exclude_children:
         type: boolean
         default: false
-        description: "Keep reads mapped to references (True) or remove them as contamination (False)"
+        description: "whether to exclude reads classified at more specific levels than specified taxonomy ID levels"
+      exclude_ancestors:
+        type: boolean
+        default: false
+        description: "whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels"
+    required:
+      - exclude_taxa_ids
+  KrakenParams:
+    type: object
+    additionalProperties: false
+    properties:
+      save_memory:
+        type: boolean
+        description: "if true, kraken limits RAM memory usage but sacrifices speed"
+        default: true
+    title: KrakenParams
   ReadsTrimming:
     type: object
     additionalProperties: false
@@ -195,8 +218,8 @@ definitions:
       type: integer
       default: 1
       description: "Number of threads to use for bam_index"
-    decontamination:
+    kraken:
       type: integer
       default: 1
-      description: "Number of threads to use for decontamination"
+      description: "Number of threads to use for kraken"
     title: Threads

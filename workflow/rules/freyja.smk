@@ -1,28 +1,30 @@
 rule samtools__mpileup_depth:
     input:
-        bam="results/mapping/{sample}/deduplicated/{reference}.bam",
-        fasta=get_reference_fasta,
+        bam="results/mapping/deduplicated/{sample}.bam",
+        bai="results/mapping/deduplicated/{sample}.bam.bai",
+        fasta=get_reference_fasta(),
     output:
-        "results/freyja/{sample}/{reference}.depth",
+        "results/freyja/{sample}.depth",
     conda:
         "../envs/samtools.yaml"
     log:
-        "logs/samtools/mpileup_depth/{reference}/{sample}.log",
+        "logs/samtools/mpileup_depth/{sample}.log",
     shell:
         "samtools mpileup -aa -A -d 600000 -Q 20 -q 0 -B -f {input.fasta} {input.bam} | cut -f1-4 > {output}"
 
 
 rule freyja__variants:
     input:
-        fasta=get_reference_fasta,
-        bam="results/mapping/{sample}/deduplicated/{reference}.bam",
-        depths="results/freyja/{sample}/{reference}.depth",
+        fasta=get_reference_fasta(),
+        bam="results/mapping/deduplicated/{sample}.bam",
+        bai="results/mapping/deduplicated/{sample}.bam.bai",
+        depths="results/freyja/{sample}/freyja.depth",
     output:
-        "results/freyja/{sample}/{reference}_variants.tsv",
+        "results/freyja/{sample}/variants.tsv",
     conda:
         "../envs/freyja.yaml"
     log:
-        "logs/freyja/variants/{reference}/{sample}.log",
+        "logs/freyja/variants/{sample}.log",
     shell:
         "freyja variants {input.bam} --variants {output} --depths {input.depths} --ref {input.fasta}"
 
@@ -43,28 +45,28 @@ rule freyja__update_lineages:
 
 rule freyja__demix:
     input:
-        variants="results/freyja/{sample}/{reference}_variants.tsv",
-        depths="results/freyja/{sample}/{reference}.depth",
+        variants="results/freyja/{sample}/variants.tsv",
+        depths="results/freyja/{sample}/freyja.depth",
         lineages=os.path.join(config["lineages_dir"], "curated_lineages.json"),
         barcodes=os.path.join(config["lineages_dir"], "usher_barcodes.csv"),
     output:
-        demix="results/freyja/{sample}/{reference}.demix",
+        demix="results/freyja/{sample}/freyja.demix",
     log:
-        "logs/freyja/demix/{reference}/{sample}.log",
+        "logs/freyja/demix/{sample}.log",
     conda:
         "../envs/freyja.yaml"
     shell:
         "freyja demix {input.variants} {input.depths} --output {output} --meta {input.lineages} --barcodes {input.barcodes}"
 
 
-rule mixture_composition_freyja_summary:
+rule freyja__summary:
     input:
-        demix="results/freyja/{sample}/{reference}.demix",
+        demix="results/freyja/{sample}/freyja.demix",
     output:
-        summary="results/freyja/{sample}/{reference}.csv",
+        summary="results/freyja/{sample}/summary.csv",
     conda:
         "../envs/python.yaml"
     log:
-        "logs/freyja/summary/{reference}/{sample}.log",
+        "logs/freyja/summary/{sample}.log",
     script:
         "../scripts/summary.py"

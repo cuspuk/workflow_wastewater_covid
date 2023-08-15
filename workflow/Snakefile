@@ -10,6 +10,7 @@ localrules:
 
 include: "rules/common.smk"
 include: "rules/mapping.smk"
+include: "rules/kraken.smk"
 include: "rules/reads.smk"
 include: "rules/freyja.smk"
 

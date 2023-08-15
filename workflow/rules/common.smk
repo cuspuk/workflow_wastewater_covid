@@ -16,7 +16,6 @@ validate(pep.sample_table, "../schemas/samples.schema.yaml")
 ## GLOBAL SPACE #################################################################
 
 MAPPING_REF = os.path.basename(os.path.normpath(config["mapping_ref"]))
-DECONTAMINATION_REF = os.path.basename(os.path.normpath(config["decontamination_ref"]))
 
 
 def get_sample_names():
@@ -34,19 +33,7 @@ def get_fastq_paths(wildcards):
 def get_constraints():
     return {
         "sample": "|".join(get_sample_names()),
-        "reference": MAPPING_REF,
     }
-
-
-def get_bwa_index_for_decontamination():
-    return multiext(
-        os.path.join(config["decontamination_ref"], "bwa_index", DECONTAMINATION_REF),
-        ".amb",
-        ".ann",
-        ".bwt",
-        ".pac",
-        ".sa",
-    )
 
 
 def get_bwa_index_for_mapping():
@@ -60,8 +47,8 @@ def get_bwa_index_for_mapping():
     )
 
 
-def get_reference_fasta(wildcards):
-    return os.path.join(config["mapping_ref"], f"{wildcards.reference}.fa")
+def get_reference_fasta():
+    return os.path.join(config["mapping_ref"], f"{MAPPING_REF}.fa")
 
 
 #### COMMON STUFF #################################################################
@@ -75,15 +62,9 @@ def get_outputs():
             sample=sample_names,
             orientation=[1, 2],
         ),
-        "bams": expand(
-            "results/mapping/{sample}/deduplicated/{reference}.bam",
-            sample=sample_names,
-            reference=MAPPING_REF,
-        ),
-        "qualimap": expand(
-            "results/mapping/{sample}/deduplicated/bamqc/{reference}", sample=sample_names, reference=MAPPING_REF
-        ),
-        "freyja": expand("results/freyja/{sample}/{reference}.csv", sample=sample_names, reference=MAPPING_REF),
+        "bams": expand("results/mapping/deduplicated/{sample}.bam", sample=sample_names),
+        "qualimap": expand("results/mapping/deduplicated/{sample}/bamqc", sample=sample_names),
+        "freyja": expand("results/freyja/{sample}/summary.csv", sample=sample_names),
     }
 
 
