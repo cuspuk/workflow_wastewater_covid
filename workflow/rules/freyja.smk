@@ -4,7 +4,7 @@ rule samtools__mpileup_depth:
         bai="results/mapping/deduplicated/{sample}.bam.bai",
         fasta=get_reference_fasta(),
     output:
-        "results/freyja/{sample}.depth",
+        "results/freyja/{sample}/freyja.depth",
     conda:
         "../envs/samtools.yaml"
     log:
