@@ -61,7 +61,7 @@ rule freyja__demix:
         "../envs/freyja.yaml"
     shell:
         "freyja demix {params.depth_cutoff} {input.variants} {input.depths} --output {output}"
-        " --meta {input.lineages} --barcodes {input.barcodes} > {log} 2>$1"
+        " --meta {input.lineages} --barcodes {input.barcodes} > {log} 2>&1"
 
 
 rule freyja__summary:
