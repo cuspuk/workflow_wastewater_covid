@@ -143,12 +143,16 @@ def get_cutadapt_extra_pe() -> str:
         args_lst.append(qual_cut_arg_r2)
 
     if param_value := config["reads__trimming"].get("remove_adapter", ""):
+        filepath = config["adapters_fasta"]
+        if not os.path.exists(filepath):
+            raise ValueError(f"Requested adapters not found at {filepath}")
+
         if param_value == "anywhere":
-            args_lst.append(f"--anywhere file:{param_value} -B file:{param_value}")
+            args_lst.append(f"--anywhere file:{filepath} -B file:{filepath}")
         elif param_value == "front":
-            args_lst.append(f"--front file:{param_value} -G file:{param_value}")
+            args_lst.append(f"--front file:{filepath} -G file:{filepath}")
         elif param_value == "regular":
-            args_lst.append(f"--adapter file:{param_value} -A file:{param_value}")
+            args_lst.append(f"--adapter file:{filepath} -A file:{filepath}")
     return " ".join(args_lst)
 
 
