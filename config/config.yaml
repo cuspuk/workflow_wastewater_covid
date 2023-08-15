@@ -9,7 +9,7 @@ reads__trimming:
   shorten_to_length: 300 # OPT shorten to this length
   max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. # fifth step
   max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
-  anywhere_adapter: "..." # Use the adapters_fasta
+  remove_adapter: "anywhere" # Use the adapters_fasta
   min_length_r1: 35 # OPT, # fourth step
   min_length_r2: 35 # OPT, # fourth step
   quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.

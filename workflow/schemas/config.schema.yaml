@@ -1,7 +1,7 @@
 "$schema": http://json-schema.org/draft-06/schema#
-"$ref": "#/definitions/Respiratory"
+"$ref": "#/definitions/WastewaterCovid"
 definitions:
-  Respiratory:
+  WastewaterCovid:
     type: object
     additionalProperties: false
     properties:
@@ -69,7 +69,7 @@ definitions:
       - adapters_fasta
       - threads
       - resources
-    title: Respiratory
+    title: WastewaterCovid
   ReadsDecontamination:
     type: object
     additionalProperties: false
@@ -124,15 +124,13 @@ definitions:
       max_expected_errors:
         type: integer
         description: "Optional. Discard reads whose expected number of errors exceeds this value"
-      anywhere_adapter:
+      remove_adapter:
         type: string
-        description: "Optional. Path to the adapter file. Search for adapters anywhere in the read"
-      front_adapter:
-        type: string
-        description: "Optional. Path to the adapter file. Search for 5' adapters in the read"
-      regular_adapter:
-        type: string
-        description: "Optional. Path to the adapter file. Search for 3' adapters in the read"
+        enum:
+          - "anywhere"
+          - "regular"
+          - "front"
+        description: "Optional. How to search for adapters in the read"
       max_length_r1:
         type: integer
         description: "Optional. Discards R1 reads longer than this"
