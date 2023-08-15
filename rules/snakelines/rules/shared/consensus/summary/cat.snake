@@ -1,9 +1,0 @@
-rule cat__concatenate_consensus_fasta:
-    input:
-        expand('consensus/{{reference}}-{{panel}}/{sample}.fa', sample=pipeline.samples_for(reference))
-    output:
-        'consensus/{reference}-{panel}/consensus.fa'
-    shell:
-        """
-        cat {input} > {output}
-        """

@@ -1,5 +1,0 @@
-channels:
-- conda-forge
-- nodefaults
-dependencies:
-- biom-format=2.1.10

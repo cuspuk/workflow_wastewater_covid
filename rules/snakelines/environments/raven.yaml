@@ -1,6 +1,0 @@
-channels:
-- conda-forge
-- bioconda
-- nodefaults
-dependencies:
-- raven-assembler=1.5.1

@@ -1,0 +1,50 @@
+### INPUT SECTION ###############################
+mapping_ref: "resources/reference/sars_cov_2/" # directory with reference fasta sequences
+adapters_fasta: "resources/adapters/artic.fa"
+kraken_dir: "resources/kraken/KRAKEN_TAG" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
+lineages_dir: "resources/freyja_lienages/TIMESTAMP"
+
+### HYPERPARAMETERS #############################
+reads__trimming:
+  shorten_to_length: 300 # OPT shorten to this length
+  max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. # fifth step
+  max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
+  remove_adapter: "anywhere" # Use the adapters_fasta
+  min_length_r1: 35 # OPT, # fourth step
+  min_length_r2: 35 # OPT, # fourth step
+  quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.
+  quality_cutoff_from_3_end_r1: 20 # OPT cutoff on 3' end of R1 read. The second step.
+  quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
+  quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
+
+reads__decontamination:
+  exclude_taxa_ids: # list of taxonomy IDs to exclude
+    - 9606 # Homo Sapiens
+  exclude_children: false # whether to exclude reads classified at more specific levels than specified taxonomy ID levels
+  exclude_ancestors: false # whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
+
+kraken__params:
+  save_memory: true # if true, kraken limits RAM memory usage but sacrifices speed
+
+freyja__params:
+  depth_cutoff: 2 # exclude sites with coverage less than the specified value
+
+# RESOURCES
+
+max_threads: 8
+max_mem_mb: 16384
+
+resources:
+  trimming_mem_mb: 4096
+  fastqc_mem_mb: 2048
+  mapping_mem_mb: 4096
+  bam_index_mem_mb: 4096
+  picard_mem_mb: 4096
+  qualimap_mem_mb: 4096
+
+threads:
+  trimming: 4
+  fastqc: 1
+  mapping: 4
+  bam_index: 2
+  kraken: 4
