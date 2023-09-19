@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/xsitarcik/wastewater_covid/compare/v2.0.0...v2.0.1) (2023-09-19)
+
+
+### Bug Fixes
+
+* using links for inputs works as for normal paths ([#12](https://github.com/xsitarcik/wastewater_covid/issues/12)) ([7efca1a](https://github.com/xsitarcik/wastewater_covid/commit/7efca1a1c48f9df23f61761e104230499cc01100))
+
 ## [2.0.0](https://github.com/xsitarcik/wastewater_covid/compare/v1.0.3...v2.0.0) (2023-08-15)
 
 
