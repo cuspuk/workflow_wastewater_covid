@@ -15,7 +15,7 @@ validate(pep.sample_table, "../schemas/samples.schema.yaml")
 
 ## GLOBAL SPACE #################################################################
 
-MAPPING_REF = os.path.basename(os.path.normpath(config["mapping_ref"]))
+MAPPING_REF = os.path.basename(os.path.realpath(config["mapping_ref"]))
 
 
 def get_sample_names():
