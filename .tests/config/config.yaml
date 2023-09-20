@@ -28,6 +28,7 @@ kraken__params:
 
 freyja__params:
   depth_cutoff: 1 # exclude sites with coverage less than the specified value
+  min_lineage_abundance: 0.001
 
 # RESOURCES
 

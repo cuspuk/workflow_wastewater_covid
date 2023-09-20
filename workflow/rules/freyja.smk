@@ -55,13 +55,16 @@ rule freyja__demix:
         depth_cutoff="--depthcutoff {val}".format(val=config["freyja__params"]["depth_cutoff"])
         if config["freyja__params"]["depth_cutoff"] != 0
         else "",
+        min_lineage_abundance="--eps {val}".format(val=config["freyja__params"]["min_lineage_abundance"])
+        if config["freyja__params"]["min_lineage_abundance"] != 0
+        else "",
     log:
         "logs/freyja/demix/{sample}.log",
     conda:
         "../envs/freyja.yaml"
     shell:
         "freyja demix {params.depth_cutoff} {input.variants} {input.depths} --output {output}"
-        " --meta {input.lineages} --barcodes {input.barcodes} > {log} 2>&1"
+        " {params.min_lineage_abundance} --meta {input.lineages} --barcodes {input.barcodes} > {log} 2>&1"
 
 
 rule freyja__summary:
