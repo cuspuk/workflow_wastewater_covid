@@ -58,6 +58,7 @@ rule freyja__demix:
         min_lineage_abundance="--eps {val}".format(val=config["freyja__params"]["min_lineage_abundance"])
         if config["freyja__params"]["min_lineage_abundance"] != 0
         else "",
+        confirmed_only="--confirmedonly" if config["freyja__params"]["only_confirmed_lineages"] else "",
     log:
         "logs/freyja/demix/{sample}.log",
     conda:

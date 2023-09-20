@@ -118,6 +118,10 @@ definitions:
         type: number
         description: "the minimum lineage abundance returned to the user"
         default: 0
+      only_confirmed_lineages:
+        type: boolean
+        description: "use only lineages that are flagged as confirmed"
+        default: true
     title: FreyjaParams
   ReadsTrimming:
     type: object
