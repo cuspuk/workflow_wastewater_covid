@@ -1,7 +1,7 @@
 ### INPUT SECTION ###############################
 mapping_ref: "resources/reference/sars_cov_2"
 adapters_fasta: "resources/adapters/artic_v4.fa"
-kraken_dir: "references/kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
+kraken_dir: "references/kraken/k2_viral_20230605" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
 lineages_dir: "references/freyja_lineages/latest"
 
 ### HYPERPARAMETERS #############################
@@ -27,7 +27,7 @@ kraken__params:
   save_memory: true # if true, kraken limits RAM memory usage but sacrifices speed
 
 freyja__params:
-  depth_cutoff: 1 # exclude sites with coverage less than the specified value
+  depth_cutoff: 2 # exclude sites with coverage less than the specified value
   min_lineage_abundance: 0.001 # exclude results with less abundance
   only_confirmed_lineages: True # exclude lineages that are not yet confirmed
 
