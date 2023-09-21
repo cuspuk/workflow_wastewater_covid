@@ -1,8 +1,8 @@
 ### INPUT SECTION ###############################
 mapping_ref: "resources/reference/sars_cov_2"
 adapters_fasta: "resources/adapters/artic_v4.fa"
-kraken_dir: "resources/kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
-lineages_dir: "resources/freyja_lienages/TIMESTAMP"
+kraken_dir: "references/kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
+lineages_dir: "references/freyja_lineages/latest"
 
 ### HYPERPARAMETERS #############################
 reads__trimming:
