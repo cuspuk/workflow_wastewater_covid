@@ -40,7 +40,7 @@ rule freyja__update_lineages:
     log:
         "{prefix_dir}/logs/freyja_update.log",
     shell:
-        "mkdir -p {params.outdir} && freyja update --outdir {params.outdir} > {log} 2>&1"
+        "(mkdir -p {params.outdir} && freyja update && freyja update --outdir {params.outdir}) > {log} 2>&1"
 
 
 rule freyja__demix:
