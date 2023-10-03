@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/xsitarcik/wastewater_covid/compare/v2.0.2...v2.0.3) (2023-10-03)
+
+
+### Bug Fixes
+
+* exposed freyja params in config ([d9a33dd](https://github.com/xsitarcik/wastewater_covid/commit/d9a33dd0b920cfd9254afa17067d7cd432441fd8))
+
 ## [2.0.2](https://github.com/xsitarcik/wastewater_covid/compare/v2.0.1...v2.0.2) (2023-10-03)
 
 
