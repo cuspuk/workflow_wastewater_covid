@@ -119,10 +119,12 @@ definitions:
         type: integer
         description: "exclude sites with coverage less than the specified value"
         default: 0
+        Minimum: 0
       min_lineage_abundance:
         type: number
         description: "the minimum lineage abundance returned to the user"
         default: 0
+        Minimum: 0
       only_confirmed_lineages:
         type: boolean
         description: "use only lineages that are flagged as confirmed"
