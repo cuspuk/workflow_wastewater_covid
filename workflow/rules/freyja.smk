@@ -72,7 +72,11 @@ rule freyja__summary:
     input:
         demix="results/freyja/{sample}/freyja.demix",
     output:
-        summary="results/freyja/{sample}/summary.csv",
+        summary=report(
+            "results/freyja/{sample}/summary.csv",
+            category="{sample}",
+            labels={"Type": "Freyja lineage"},
+        ),
     conda:
         "../envs/python.yaml"
     log:
