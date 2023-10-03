@@ -29,7 +29,9 @@ kraken__params:
   save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
 
 freyja__params:
-  depth_cutoff: 2 # Exclude sites with coverage less than the specified value
+  depth_cutoff: 2 # Exclude sites with coverage less than the specified value.
+  min_lineage_abundance: 0.001 # Exclude results with less abundance.
+  only_confirmed_lineages: True # Exclude lineages that are not yet confirmed.
 
 # RESOURCES
 
