@@ -1,33 +1,35 @@
 ### INPUT SECTION ###############################
-mapping_ref: "{sars_cov2_reference_dir}"
-adapters_fasta: "{adapters_filepath}"
-kraken_dir: "{kraken_dir}"
-lineages_dir: "{lineages_dir}"
+mapping_ref: "{sars_cov2_reference_dir}" # Directory with reference fasta sequence for mapping.
+adapters_fasta: "{adapters_filepath}" # Adapters fasta used for adapter trimming.
+kraken_dir: "{kraken_dir}" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
+lineages_dir: "{lineages_dir}" # Versioned directory with freyja lineages. If does not exist, will be downloaded.
+
+# get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
 
 ### HYPERPARAMETERS #############################
 reads__trimming:
-  shorten_to_length: 300 # OPT shorten to this length
-  max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. # fifth step
+  shorten_to_length: 500 # OPT shorten to this length.
+  max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. The fifth step.
   max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
-  remove_adapter: "anywhere" # Use the adapters_fasta
-  min_length_r1: 35 # OPT, # fourth step
-  min_length_r2: 35 # OPT, # fourth step
+  remove_adapter: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front',
+  min_length_r1: 35 # OPT, minimum R1 read length. The fourth step.
+  min_length_r2: 35 # OPT, minimum R2 read length. The fourth step.
   quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.
   quality_cutoff_from_3_end_r1: 20 # OPT cutoff on 3' end of R1 read. The second step.
   quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
   quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
 
 reads__decontamination:
-  exclude_taxa_ids: # list of taxonomy IDs to exclude
+  exclude_taxa_ids: # list of taxonomy IDs to exclude.
     - 9606 # Homo Sapiens
-  exclude_children: false # whether to exclude reads classified at more specific levels than specified taxonomy ID levels
-  exclude_ancestors: false # whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
+  exclude_children: false # Whether to exclude reads classified at more specific levels than specified taxonomy ID levels.
+  exclude_ancestors: false # Whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
 
 kraken__params:
-  save_memory: true # if true, kraken limits RAM memory usage but sacrifices speed
+  save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
 
 freyja__params:
-  depth_cutoff: 2 # exclude sites with coverage less than the specified value
+  depth_cutoff: 2 # Exclude sites with coverage less than the specified value
 
 # RESOURCES
 

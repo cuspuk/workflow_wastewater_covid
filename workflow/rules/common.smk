@@ -137,6 +137,15 @@ def get_cutadapt_extra_pe() -> str:
     return " ".join(args_lst)
 
 
+def get_kraken_decontamination_params():
+    extra = []
+    if config["reads__decontamination"]["exclude_children"]:
+        extra.append("--include-children")
+    if config["reads__decontamination"]["exclude_ancestors"]:
+        extra.append("--include-parents")
+    return " ".join(extra)
+
+
 ### RESOURCES
 
 
