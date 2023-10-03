@@ -41,22 +41,22 @@ rule kraken__decontaminate:
 
 rule fastqc__quality_report:
     input:
-        read="results/reads/{step}/{fastq}.fastq.gz",
+        read="results/reads/{step}/{sample}_{strand}.fastq.gz",
     output:
         html=report(
-            "results/reads/{step}/fastqc/{fastq}.html",
+            "results/reads/{step}/fastqc/{sample}_{strand}.html",
             category="{sample}",
             labels={
                 "Type": "Fastqc {strand} - {step}",
             },
         ),
-        zip="results/reads/{step}/fastqc/{fastq}.zip",
-        qc_data="results/reads/{step}/fastqc/{fastq}/fastqc_data.txt",
-        summary_txt="results/reads/{step}/fastqc/{fastq}/summary.txt",
+        zip="results/reads/{step}/fastqc/{sample}_{strand}.zip",
+        qc_data="results/reads/{step}/fastqc/{sample}_{strand}/fastqc_data.txt",
+        summary_txt="results/reads/{step}/fastqc/{sample}_{strand}/summary.txt",
     threads: min(config["threads"]["fastqc"], config["max_threads"])
     resources:
         mem_mb=get_mem_mb_for_fastqc,
     log:
-        "logs/fastqc/{step}/{fastq}.log",
+        "logs/fastqc/{step}/{sample}_{strand}.log",
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.4/wrappers/fastqc/quality"
