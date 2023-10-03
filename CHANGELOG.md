@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/xsitarcik/wastewater_covid/compare/v2.0.1...v2.0.2) (2023-10-03)
+
+
+### Bug Fixes
+
+* update freyja version ([#14](https://github.com/xsitarcik/wastewater_covid/issues/14)) ([829ca8c](https://github.com/xsitarcik/wastewater_covid/commit/829ca8c88980621970a772cad92902c2845e044f))
+
 ## [2.0.1](https://github.com/xsitarcik/wastewater_covid/compare/v2.0.0...v2.0.1) (2023-09-19)
 
 
