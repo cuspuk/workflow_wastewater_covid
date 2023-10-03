@@ -45,7 +45,12 @@ definitions:
       freyja__params:
         type: object
         "$ref": "#/definitions/FreyjaParams"
-        default: { "depth_cutoff": 0 }
+        default:
+          {
+            "depth_cutoff": 0,
+            "min_lineage_abundance": 0,
+            "only_confirmed_lineages": true,
+          }
       resources:
         type: object
         "$ref": "#/definitions/Resources"
@@ -114,6 +119,14 @@ definitions:
         type: integer
         description: "exclude sites with coverage less than the specified value"
         default: 0
+      min_lineage_abundance:
+        type: number
+        description: "the minimum lineage abundance returned to the user"
+        default: 0
+      only_confirmed_lineages:
+        type: boolean
+        description: "use only lineages that are flagged as confirmed"
+        default: true
     title: FreyjaParams
   ReadsTrimming:
     type: object
