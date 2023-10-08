@@ -1,7 +1,7 @@
 # Snakemake workflow: wastewater_covid
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥7.25.0-brightgreen.svg)](https://snakemake.github.io)
-[![GitHub actions status](https://github.com/xsitarcik/wastewater_covid/workflows/Tests/badge.svg?branch=main)](https://github.com/xsitarcik/wastewater_covid/actions?query=branch%3Amain+workflow%3ATests)
+[![Tests](https://github.com/xsitarcik/wastewater_covid/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/xsitarcik/wastewater_covid/actions/workflows/main.yml?branch=main)
 
 Snakemake workflow for analysis of wastewater covid samples
 
