@@ -17,12 +17,12 @@ rule custom__infer_and_store_read_group:
         get_one_fastq_file,
     output:
         read_group="results/reads/original/read_group/{sample}.txt",
+    params:
+        sample_id=lambda wildcards: wildcards.sample,
     log:
         "logs/custom/infer_and_store_read_group/{sample}.log",
-    conda:
-        "../envs/python.yaml"
-    script:
-        "../scripts/save_read_group.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.11.0/wrappers/custom/read_group"
 
 
 rule bwa__map_reads_to_reference:
