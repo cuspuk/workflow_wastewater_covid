@@ -56,9 +56,9 @@ def infer_read_path(wildcards):
         return "results/reads/{step}/{sample}_{orientation}.fastq.gz"
     else:
         if wildcards.orientation == "R1":
-            return get_one_fastq_file(wildcards, read_pair="fq1")
+            return get_one_fastq_file(wildcards, read_pair="fq1")[0]
         elif wildcards.orientation == "R2":
-            return get_one_fastq_file(wildcards, read_pair="fq2")
+            return get_one_fastq_file(wildcards, read_pair="fq2")[0]
 
 
 #### COMMON STUFF #################################################################
