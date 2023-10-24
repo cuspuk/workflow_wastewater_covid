@@ -53,11 +53,11 @@ def get_reference_fasta():
 
 def infer_read_path(wildcards):
     if wildcards.step != "original":
-        return "results/reads/{step}/{sample}_{strand}.fastq.gz"
+        return "results/reads/{step}/{sample}_{orientation}.fastq.gz"
     else:
-        if wildcards.strand == "R1":
+        if wildcards.orientation == "R1":
             return get_one_fastq_file(wildcards, read_pair="fq1")
-        elif wildcards.strand == "R2":
+        elif wildcards.orientation == "R2":
             return get_one_fastq_file(wildcards, read_pair="fq2")
 
 
@@ -68,8 +68,8 @@ def get_outputs():
     sample_names = get_sample_names()
     return {
         "fastqc_report": expand(
-            "results/reads/trimmed/fastqc/{sample}_R{orientation}.html",
-            steps=["original", "trimmed", "decontaminated"],
+            "results/reads/{step}/fastqc/{sample}_R{orientation}.html",
+            step=["original", "trimmed", "decontaminated"],
             sample=sample_names,
             orientation=[1, 2],
         ),
