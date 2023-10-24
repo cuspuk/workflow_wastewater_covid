@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.4](https://github.com/xsitarcik/wastewater_covid/compare/v2.0.3...v2.0.4) (2023-10-24)
+
+
+### Bug Fixes
+
+* added fastqc for all read steps ([65caf6e](https://github.com/xsitarcik/wastewater_covid/commit/65caf6e38047eb80defbd5157385c9d86020d25b))
+
 ## [2.0.3](https://github.com/xsitarcik/wastewater_covid/compare/v2.0.2...v2.0.3) (2023-10-03)
 
 
