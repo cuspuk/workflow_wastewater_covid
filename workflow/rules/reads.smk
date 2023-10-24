@@ -41,7 +41,7 @@ rule kraken__decontaminate:
 
 rule fastqc__quality_report:
     input:
-        read="results/reads/{step}/{sample}_{strand}.fastq.gz",
+        read=infer_read_path,
     output:
         html=report(
             "results/reads/{step}/fastqc/{sample}_{strand}.html",
