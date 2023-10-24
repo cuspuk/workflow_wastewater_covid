@@ -22,8 +22,8 @@ def get_sample_names():
     return list(pep.sample_table["sample_name"].values)
 
 
-def get_one_fastq_file(wildcards):
-    return pep.sample_table.loc[wildcards.sample][["fq1"]]
+def get_one_fastq_file(wildcards, read_pair="fq1"):
+    return pep.sample_table.loc[wildcards.sample][[read_pair]]
 
 
 def get_fastq_paths(wildcards):
@@ -51,6 +51,16 @@ def get_reference_fasta():
     return os.path.join(config["mapping_ref"], f"{MAPPING_REF}.fa")
 
 
+def infer_read_path(wildcards):
+    if wildcards.step != "original":
+        return "results/reads/{step}/{sample}_{orientation}.fastq.gz"
+    else:
+        if wildcards.orientation == "R1":
+            return get_one_fastq_file(wildcards, read_pair="fq1")[0]
+        elif wildcards.orientation == "R2":
+            return get_one_fastq_file(wildcards, read_pair="fq2")[0]
+
+
 #### COMMON STUFF #################################################################
 
 
@@ -58,7 +68,8 @@ def get_outputs():
     sample_names = get_sample_names()
     return {
         "fastqc_report": expand(
-            "results/reads/trimmed/fastqc/{sample}_R{orientation}.html",
+            "results/reads/{step}/fastqc/{sample}_R{orientation}.html",
+            step=["original", "trimmed", "decontaminated"],
             sample=sample_names,
             orientation=[1, 2],
         ),
