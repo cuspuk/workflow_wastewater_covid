@@ -9,7 +9,7 @@ rule bwa__build_index:
     log:
         "{reference_dir}/bwa_index/logs/{fasta}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/bwa/index"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.7/wrappers/bwa/index"
 
 
 rule custom__infer_and_store_read_group:
@@ -22,7 +22,7 @@ rule custom__infer_and_store_read_group:
     log:
         "logs/custom/infer_and_store_read_group/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.11.0/wrappers/custom/read_group"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.7/wrappers/custom/read_group"
 
 
 rule bwa__map_reads_to_reference:
@@ -43,23 +43,23 @@ rule bwa__map_reads_to_reference:
     benchmark:
         "benchmarks/bwa/map_reads_to_reference/{sample}.benchmark"
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.7/wrappers/bwa/map"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.7/wrappers/bwa/map"
 
 
 rule samtools__bam_index:
     input:
-        bam="results/mapping/{step}/{sample}.bam",
+        "results/mapping/mapped/{sample}.bam",
     output:
-        bai="results/mapping/{step}/{sample}.bam.bai",
+        "results/mapping/mapped/{sample}.bam.bai",
     benchmark:
-        "benchmarks/samtools/bam_index/{step}/{sample}.benchmark"
+        "benchmarks/samtools/bam_index/mapped/{sample}.benchmark"
     threads: min(config["threads"]["bam_index"], config["max_threads"])
     resources:
         mem_mb=get_mem_mb_for_bam_index,
     log:
-        "logs/samtools/bam_index/{step}/{sample}.log",
+        "logs/samtools/bam_index/mapped/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/samtools/index"
+        "v3.3.3/bio/samtools/index"
 
 
 rule picard__mark_duplicates:
@@ -68,9 +68,8 @@ rule picard__mark_duplicates:
         bai="results/mapping/mapped/{sample}.bam.bai",
     output:
         bam="results/mapping/deduplicated/{sample}.bam",
+        idx="results/mapping/deduplicated/{sample}.bam.bai",
         metrics=temp("results/mapping/deduplicated/{sample}.stats"),
-    params:
-        extra="--VALIDATION_STRINGENCY SILENT",
     resources:
         mem_mb=get_mem_mb_for_picard,
     log:
@@ -78,7 +77,20 @@ rule picard__mark_duplicates:
     benchmark:
         "benchmarks/picard/mark_duplicates/{sample}.benchmark"
     wrapper:
-        "v2.1.1/bio/picard/markduplicates"
+        "v3.3.3/bio/picard/markduplicates"
+
+
+checkpoint samtools__view_number_of_reads:
+    input:
+        "results/mapping/deduplicated/{sample}.bam",
+    output:
+        "results/mapping/deduplicated/{sample}.count",
+    log:
+        "logs/samtools/view_number_of_reads/{sample}.log",
+    conda:
+        "../envs/samtools.yaml"
+    shell:
+        "samtools view -c {input} > {output} 2> {log}"
 
 
 rule qualimap__mapping_quality_report:
@@ -104,4 +116,4 @@ rule qualimap__mapping_quality_report:
     log:
         "logs/qualimap/mapping_quality_report/{step}/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/qualimap/bamqc"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.7/wrappers/qualimap/bamqc"
