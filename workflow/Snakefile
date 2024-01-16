@@ -14,6 +14,7 @@ include: "rules/mapping.smk"
 include: "rules/kraken.smk"
 include: "rules/reads.smk"
 include: "rules/freyja.smk"
+include: "rules/result.smk"
 
 
 wildcard_constraints:
