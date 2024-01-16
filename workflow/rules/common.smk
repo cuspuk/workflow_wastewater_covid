@@ -64,18 +64,30 @@ def infer_read_path(wildcards):
 #### COMMON STUFF #################################################################
 
 
+def get_relevant_outputs(wildcards):
+    base_outputs = [
+        "results/reads/decontaminated/fastqc/{sample}_R1.html",
+        "results/reads/decontaminated/fastqc/{sample}_R2.html",
+        "results/reads/original/fastqc/{sample}_R1.html",
+        "results/reads/original/fastqc/{sample}_R2.html",
+        "results/mapping/deduplicated/{sample}.bam",
+    ]
+
+    with checkpoints.samtools__view_number_of_reads.get(sample=wildcards.sample).output[0].open() as f:
+        num = int(f.read().strip())
+
+    if num < 1:
+        return base_outputs
+
+    return base_outputs + [
+        "results/freyja/{sample}/summary.csv",
+    ]
+
+
 def get_outputs():
     sample_names = get_sample_names()
     return {
-        "fastqc_report": expand(
-            "results/reads/{step}/fastqc/{sample}_R{orientation}.html",
-            step=["original", "trimmed", "decontaminated"],
-            sample=sample_names,
-            orientation=[1, 2],
-        ),
-        "bams": expand("results/mapping/deduplicated/{sample}.bam", sample=sample_names),
-        "qualimap": expand("results/mapping/deduplicated/{sample}/bamqc", sample=sample_names),
-        "freyja": expand("results/freyja/{sample}/summary.csv", sample=sample_names),
+        "graceful_success": expand("results/.success/{sample}.txt", sample=sample_names),
     }
 
 
