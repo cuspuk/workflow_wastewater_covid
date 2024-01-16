@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/xsitarcik/wastewater_covid/compare/v2.0.6...v2.1.0) (2024-01-16)
+
+
+### Features
+
+* added graceful handling of empty bam ([daa6ef2](https://github.com/xsitarcik/wastewater_covid/commit/daa6ef22e8843399c61ccd5413d93c14f4a04ed9))
+
 ## [2.0.6](https://github.com/xsitarcik/wastewater_covid/compare/v2.0.5...v2.0.6) (2023-12-15)
 
 
