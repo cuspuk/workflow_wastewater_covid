@@ -53,7 +53,7 @@ reads__decontamination__kraken:
 
 freyja__params:
   lineages_dir: "resources/freyja_lineages/22_09_2023"
-  depth_cutoff: 10 # exclude sites with coverage less than the specified value
+  depth_cutoff: 15 # exclude sites with coverage less than the specified value
   min_lineage_abundance: 0.001 # exclude results with less abundance
   only_confirmed_lineages: True # exclude lineages that are not yet confirmed
 
