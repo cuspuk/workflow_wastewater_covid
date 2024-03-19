@@ -17,11 +17,17 @@ jobs:
           app_id: ${{ secrets.CONDA_UPDATE_ENVS_APP_ID }}
           private_key: ${{ secrets.CONDA_UPDATE_ENVS_PRIVATE_KEY }}
 
-      - name: Update conda envs and also create pinnings
-        uses: snakemake/snakedeploy-github-action@v1
+      - name: Update conda envs
+        uses: snakemake/snakedeploy-github-action@v1.0.3
         with:
           subcommand: update-conda-envs
-          args: workflow/envs/freyja.yaml
+          args: workflow/envs/*.yaml
+
+      - name: Update snakemake wrappers
+        uses: snakemake/snakedeploy-github-action@v1.0.3
+        with:
+          subcommand: update-snakemake-wrappers
+          args: workflow/rules/*.smk
 
       # Make changes to pull request here
       - name: Create Pull Request

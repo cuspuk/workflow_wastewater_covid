@@ -1,52 +1,79 @@
 ### INPUT SECTION ###############################
+reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
+  subsampling: null # OPT - specify method of subsampling. Allowed: "seqtk", "null".
+  trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", "null".
+  decontamination: "kraken" # OPT - specify method of decontamination. Allowed: "kraken", "null".
+  deduplication: null # OPT - specify method of deduplication. Allowed: "fastuniq", "null".
+  _generate_fastqc_for: ["original", "decontamination"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
+
 mapping_ref: "resources/reference/sars_cov_2"
-adapters_fasta: "resources/adapters/artic_v4.fa"
-kraken_dir: "references/kraken/k2_viral_20230605" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
-lineages_dir: "resources/freyja_lineages/22_09_2023"
 
 ### HYPERPARAMETERS #############################
-reads__trimming:
-  shorten_to_length: 300 # OPT shorten to this length
-  max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. # fifth step
-  max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
-  remove_adapter: "anywhere" # Use the adapters_fasta
-  min_length_r1: 35 # OPT, # fourth step
-  min_length_r2: 35 # OPT, # fourth step
-  quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.
-  quality_cutoff_from_3_end_r1: 20 # OPT cutoff on 3' end of R1 read. The second step.
-  quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
-  quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
+reads__trimming__cutadapt:
+  # 1st stage - trimming
+  cut_from_start_r1: null # OPT - removes a specified number of bases from the beginning of the R1 read.
+  cut_from_start_r2: null # OPT - removes a specified number of bases from the beginning of the R2 read.
+  cut_from_end_r1: null # OPT - removes a specified number of bases from the end of the R1 read.
+  cut_from_end_r2: null # OPT - removes a specified number of bases from the end of the R2 read.
+  quality_cutoff_from_5_end_r1: 20 # cutoff on 5' end of R1 read. The second step.
+  quality_cutoff_from_3_end_r1: 20 # cutoff on 3' end of R1 read. The second step.
+  quality_cutoff_from_5_end_r2: 20 # cutoff on 5' end of R2 read. The second step.
+  quality_cutoff_from_3_end_r2: 20 # cutoff on 3' end of R2 read. The second step.
 
-reads__decontamination:
+  # 2nd stage - Adapter removal
+  adapter_removal: # OPT - set "do" to false to skip this step.
+    do: true # If true, all below options are required. Else, they are ignored/can be deleted.
+    adapters_fasta: "resources/adapters/artic_v4.fa"
+    action: "trim" # Defines an action to perform with the found adapter.
+    overlap: 3 # Minimum number of bases required to overlap with the adapter (default: 3).
+    read_location: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front' and "anywhere" (default: "anywhere").
+    error_rate: 0.1 # Error tolerance used when searching for adapter (default: 0.1).
+    times: 1 # How many times to do adapter removal (default: 1).
+    keep_trimmed_only: false # Discard reads with no adapters found (default: false).
+
+  # 3rd stage - post adapter trimming
+  shorten_to_length: 300 # OPT - both R1 and R2 are shortened to this length.
+  trim_N_bases_on_ends: null # OPT - trim flanking N's on both read ends.
+
+  # 4th stage - Filtering
+  min_length_r1: 35 # OPT - minimum R1 read length. If R1 read is shorter, both R1 and R2 reads are discarded. The fourth step.
+  min_length_r2: 35 # OPT - minimum R2 read length. If R2 read is shorter, both R1 and R2 reads are discarded. The fourth step.
+  max_length_r1: null # OPT - maximum R1 read length. If R1 read is longer, both R1 and R2 reads are discarded. The fourth step.
+  max_length_r2: null # OPT - maximum R2 read length. If R2 read is longer, both R1 and R2 reads are discarded. The fourth step.
+  max_n_bases: 3 # OPT - Discard read if R1 or R2 has more than the specified number of N bases. The fifth step.
+  max_expected_errors: 3 # OPT - Discard read if R1 or R2 has more expected errors than this.
+
+reads__decontamination__kraken:
+  kraken_dir: "references/kraken/k2_viral_20230605" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
   exclude_taxa_ids: # list of taxonomy IDs to exclude
     - 9606 # Homo Sapiens
   exclude_children: false # whether to exclude reads classified at more specific levels than specified taxonomy ID levels
   exclude_ancestors: false # whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
-
-kraken__params:
   save_memory: true # if true, kraken limits RAM memory usage but sacrifices speed
 
 freyja__params:
-  depth_cutoff: 10 # exclude sites with coverage less than the specified value
+  lineages_dir: "resources/freyja_lineages/22_09_2023"
+  depth_cutoff: 15 # exclude sites with coverage less than the specified value
   min_lineage_abundance: 0.001 # exclude results with less abundance
   only_confirmed_lineages: True # exclude lineages that are not yet confirmed
 
 # RESOURCES
 
-max_threads: 1
+max_threads: 2
 max_mem_mb: 4096
 
 resources:
-  trimming_mem_mb: 4096
-  fastqc_mem_mb: 2048
+  reads__trimming_mem_mb: 4096
+  reads__fastqc_mem_mb: 2048
   mapping_mem_mb: 4096
   bam_index_mem_mb: 4096
   picard_mem_mb: 4096
   qualimap_mem_mb: 4096
 
 threads:
-  trimming: 1
-  fastqc: 1
-  mapping: 1
+  reads__trimming: 2
+  reads__fastqc: 1
+  reads__decontamination: 2
+  mapping: 2
   bam_index: 1
-  kraken: 1
+  kraken: 2
