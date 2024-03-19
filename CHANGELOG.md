@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/xsitarcik/wastewater_covid/compare/v2.1.1...v3.0.0) (2024-03-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* reworked using reads module
+
+### Features
+
+* reworked using reads module ([9abaa22](https://github.com/xsitarcik/wastewater_covid/commit/9abaa226e53e83aee3c6eb6966162b1440a14923))
+
 ## [2.1.1](https://github.com/xsitarcik/wastewater_covid/compare/v2.1.0...v2.1.1) (2024-02-16)
 
 
