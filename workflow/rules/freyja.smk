@@ -47,17 +47,21 @@ rule freyja__demix:
     input:
         variants="results/freyja/{sample}/variants.tsv",
         depths="results/freyja/{sample}/freyja.depth",
-        lineages=os.path.join(config["lineages_dir"], "curated_lineages.json"),
-        barcodes=os.path.join(config["lineages_dir"], "usher_barcodes.csv"),
+        lineages=os.path.join(config["freyja__params"]["lineages_dir"], "curated_lineages.json"),
+        barcodes=os.path.join(config["freyja__params"]["lineages_dir"], "usher_barcodes.csv"),
     output:
         "results/freyja/{sample}/freyja.demix",
     params:
-        depth_cutoff="--depthcutoff {val}".format(val=config["freyja__params"]["depth_cutoff"])
-        if config["freyja__params"]["depth_cutoff"] != 0
-        else "",
-        min_lineage_abundance="--eps {val}".format(val=config["freyja__params"]["min_lineage_abundance"])
-        if config["freyja__params"]["min_lineage_abundance"] != 0
-        else "",
+        depth_cutoff=(
+            "--depthcutoff {val}".format(val=config["freyja__params"]["depth_cutoff"])
+            if config["freyja__params"]["depth_cutoff"] != 0
+            else ""
+        ),
+        min_lineage_abundance=(
+            "--eps {val}".format(val=config["freyja__params"]["min_lineage_abundance"])
+            if config["freyja__params"]["min_lineage_abundance"] != 0
+            else ""
+        ),
         confirmed_only="--confirmedonly" if config["freyja__params"]["only_confirmed_lineages"] else "",
     log:
         "logs/freyja/demix/{sample}.log",

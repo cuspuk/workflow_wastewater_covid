@@ -3,16 +3,23 @@ from snakemake.utils import min_version
 min_version("7.25.0")
 
 
-localrules:
-    all,
-    custom__infer_and_store_read_group,
-    curl__download_kraken_db,
-
-
 include: "rules/common.smk"
+
+
+module reads_workflow:
+    snakefile:
+        github("xsitarcik/reads", path="workflow/Snakefile", tag="v3.1.7")
+    config:
+        config
+
+
+use rule * from reads_workflow exclude all
+
+
+dynamic_outputs = reads_workflow.get_outputs()
+
+
 include: "rules/mapping.smk"
-include: "rules/kraken.smk"
-include: "rules/reads.smk"
 include: "rules/freyja.smk"
 include: "rules/result.smk"
 
@@ -24,3 +31,5 @@ wildcard_constraints:
 rule all:
     input:
         **get_outputs(),
+        **dynamic_outputs,
+    localrule: True
