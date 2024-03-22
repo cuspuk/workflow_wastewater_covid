@@ -3,4 +3,4 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - freyja =1.4.9
+  - freyja =1.5.0
