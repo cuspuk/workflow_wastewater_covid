@@ -81,6 +81,7 @@ rule freyja__summary:
             category="{sample}",
             labels={"Type": "Freyja lineage"},
         ),
+    localrule: True
     conda:
         "../envs/python.yaml"
     log:
