@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.0.1](https://github.com/xsitarcik/wastewater_covid/compare/v3.0.0...v3.0.1) (2024-03-22)
+
+
+### Bug Fixes
+
+* freyja summary marked as local ([72f164e](https://github.com/xsitarcik/wastewater_covid/commit/72f164eccbbf3467c44343e8ef46c6f4434d4850))
+
+
+### Performance Improvements
+
+* autobump conda envs ([73cda42](https://github.com/xsitarcik/wastewater_covid/commit/73cda42ccb89d9cb06640dae3911329e7ff54f18))
+
 ## [3.0.0](https://github.com/xsitarcik/wastewater_covid/compare/v2.1.1...v3.0.0) (2024-03-19)
 
 
