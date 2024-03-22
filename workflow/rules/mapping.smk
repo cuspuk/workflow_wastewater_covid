@@ -55,7 +55,7 @@ rule samtools__bam_index:
     log:
         "logs/samtools/bam_index/mapped/{sample}.log",
     wrapper:
-        "v3.5.1/bio/samtools/index"
+        "v3.5.2/bio/samtools/index"
 
 
 rule picard__mark_duplicates:
@@ -73,7 +73,7 @@ rule picard__mark_duplicates:
     benchmark:
         "benchmarks/picard/mark_duplicates/{sample}.benchmark"
     wrapper:
-        "v3.5.1/bio/picard/markduplicates"
+        "v3.5.2/bio/picard/markduplicates"
 
 
 checkpoint samtools__view_number_of_reads:
