@@ -32,4 +32,4 @@ rule multiqc__report:
     log:
         "logs/multiqc/all.log",
     wrapper:
-        "v3.7.0/bio/multiqc"
+        "v3.8.0/bio/multiqc"
