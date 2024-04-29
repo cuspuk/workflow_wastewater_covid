@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.4](https://github.com/xsitarcik/wastewater_covid/compare/v3.0.3...v3.0.4) (2024-04-29)
+
+
+### Performance Improvements
+
+* autobump conda envs ([e6264dc](https://github.com/xsitarcik/wastewater_covid/commit/e6264dc0180cdd60b8ec5acc81527425c47b7634))
+
 ## [3.0.3](https://github.com/xsitarcik/wastewater_covid/compare/v3.0.2...v3.0.3) (2024-04-19)
 
 
