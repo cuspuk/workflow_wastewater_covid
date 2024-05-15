@@ -8,12 +8,12 @@ include: "rules/common.smk"
 
 module reads_workflow:
     snakefile:
-        github("xsitarcik/reads", path="workflow/Snakefile", tag="v3.1.7")
+        github("cuspuk/workflow_reads", path="workflow/Snakefile", tag="v3.4.5")
     config:
         config
 
 
-use rule * from reads_workflow exclude all
+use rule * from reads_workflow exclude all, multiqc__report
 
 
 dynamic_outputs = reads_workflow.get_outputs()

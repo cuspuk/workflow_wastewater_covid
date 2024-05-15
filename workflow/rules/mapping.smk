@@ -9,7 +9,7 @@ rule bwa__build_index:
     log:
         "{reference_dir}/bwa_index/logs/{fasta}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.7/wrappers/bwa/index"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.7/wrappers/bwa/index"
 
 
 rule custom__infer_read_group:
@@ -23,7 +23,7 @@ rule custom__infer_read_group:
         "logs/custom/infer_and_store_read_group/{sample}.log",
     localrule: True
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.12/wrappers/custom/read_group"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.12/wrappers/custom/read_group"
 
 
 rule bwa__map_reads_to_reference:
@@ -39,7 +39,7 @@ rule bwa__map_reads_to_reference:
     log:
         "logs/bwa/map_reads_to_reference/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.12/wrappers/bwa/map"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.12/wrappers/bwa/map"
 
 
 rule samtools__bam_index:
@@ -112,4 +112,4 @@ rule qualimap__mapping_quality_report:
     log:
         "logs/qualimap/mapping_quality_report/{step}/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.12/wrappers/qualimap/bamqc"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.12/wrappers/qualimap/bamqc"

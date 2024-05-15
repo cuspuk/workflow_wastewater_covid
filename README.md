@@ -1,19 +1,15 @@
 # Snakemake workflow: wastewater_covid
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥7.25.0-brightgreen.svg)](https://snakemake.github.io)
-[![Tests](https://github.com/xsitarcik/wastewater_covid/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/xsitarcik/wastewater_covid/actions/workflows/main.yml?branch=main)
+[![Tests](https://github.com/cuspuk/workflow_wastewater_covid/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/cuspuk/workflow_wastewater_covid/actions/workflows/main.yml?branch=main)
 
 Snakemake workflow for analysis of wastewater covid samples
 
 ## Installing and running
 
-To install the workflow, simply git clone the repository into the path you want:
+To install the workflow, simply git clone the repository.
 
-```bash
-git clone git@github.com:xsitarcik/wastewater_covid.git
-```
-
-Install the following conda environment:
+Then, install the following conda environment:
 
 ```bash
 mamba create -c conda-forge -c bioconda --name snakemake_wastewater_covid snakemake=7.25 peppy snakemake-wrapper-utils

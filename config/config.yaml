@@ -1,55 +1,53 @@
-### INPUT SECTION ###############################
 reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
-  subsampling: null # OPT - specify method of subsampling. Allowed: "seqtk", "null".
-  trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", "null".
-  decontamination: "kraken" # OPT - specify method of decontamination. Allowed: "kraken", "null".
-  deduplication: null # OPT - specify method of deduplication. Allowed: "fastuniq", "null".
-  _generate_fastqc_for: ["original", "decontamination"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
+  subsampling: null # null/enum: Subsampling method, if not set, subsampling will not be performed. Allowed: 'seqtk'.
+  trimming: "cutadapt" # null/enum: Trimming method, if not set, trimming will not be performed. Allowed: 'cutadapt'.
+  decontamination: "kraken" # null/enum: Decontamination method, if not set, decontamination will not be performed. Allowed: 'kraken'.
+  deduplication: null # null/enum: Deduplication method, if not set, deduplication will not be performed. Allowed: 'fastuniq'.
+  _generate_fastqc_for: ["original", "decontamination"] # list of enum: Specify which steps to generate fastqc for. Allowed: 'original','subsampling','trimming','decontamination','deduplication'.
 
 mapping_ref: "/data/genome/virus/sars_cov_2/" # Directory with reference fasta sequence for mapping.
 
 ### HYPERPARAMETERS #############################
-reads__trimming__cutadapt:
-  # 1st stage - trimming
-  cut_from_start_r1: null # OPT - removes a specified number of bases from the beginning of the R1 read.
-  cut_from_start_r2: null # OPT - removes a specified number of bases from the beginning of the R2 read.
-  cut_from_end_r1: null # OPT - removes a specified number of bases from the end of the R1 read.
-  cut_from_end_r2: null # OPT - removes a specified number of bases from the end of the R2 read.
-  quality_cutoff_from_5_end_r1: 20 # cutoff on 5' end of R1 read. The second step.
-  quality_cutoff_from_3_end_r1: 20 # cutoff on 3' end of R1 read. The second step.
-  quality_cutoff_from_5_end_r2: 20 # cutoff on 5' end of R2 read. The second step.
-  quality_cutoff_from_3_end_r2: 20 # cutoff on 3' end of R2 read. The second step.
 
-  # 2nd stage - Adapter removal
-  adapter_removal: # OPT - set "do" to false to skip this step.
-    do: true # If true, all below options are required. Else, they are ignored/can be deleted.
-    adapters_fasta: "/data/genome/virus/sars_cov_2/adapters/artic_v4.fa"
-    action: "trim" # Defines an action to perform with the found adapter. Allowed: "trim" (trim adapter and sequence before/after), "retain" (trim only sequence before/after adapter), "mask" (put Ns instead of trimming), "none" (do nothing, useful for report), "lowercase" (convert to lowercase instead of trimming).
-    overlap: 3 # Minimum number of bases required to overlap with the adapter (default: 3).
-    read_location: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front' and "anywhere" (default: "anywhere").
-    error_rate: 0.1 # Error tolerance used when searching for adapter (default: 0.1).
-    times: 1 # How many times to do adapter removal (default: 1).
-    keep_trimmed_only: false # Discard reads with no adapters found (default: false).
+reads__trimming__cutadapt: # Relevant only if reads->trimming is set to cutadapt.
+  cut_from_start_r1: null # null/int: Removes a specified number of bases from the beginning of the R1 read.
+  cut_from_start_r2: null # null/int: Removes a specified number of bases from the beginning of the R2 read.
+  cut_from_end_r1: null # null/int: Removes a specified number of bases from the end of the R1 read.
+  cut_from_end_r2: null # null/int: Removes a specified number of bases from the end of the R2 read.
+  quality_cutoff_from_3_end_r1: 20 # int(20): Removes lower quality bases from the 3' end of the R1 read.
+  quality_cutoff_from_5_end_r1: 20 # int(20): Removes lower quality bases from the 5' end of the R1 read.
+  quality_cutoff_from_3_end_r2: 20 # int(20): Removes lower quality bases from the 3' end of the R2 read.
+  quality_cutoff_from_5_end_r2: 20 # int(20): Removes lower quality bases from the 5' end of the R2 read.
+  nextseq_trimming_mode: false # bool(false): Modify quality-trimming algorithm to expect two-color chemistry data (NextSeq).
+  do_adapter_removal: true # bool(false): Whether to do adapter removal or not.
+  adapter_removal: # Relevant only if do_adapter_removal is set to true.
+    action: "trim" # enum(trim): Defines an action to perform with the found adapter. Allowed: 'retain','trim','mask','none','lowercase'.
+    overlap: 3 # int(3): Minimum number of bases required to overlap with the adapter.
+    error_rate: 0.1 # float(0.1): Error tolerance used when searching for adapter.
+    times: 1 # int(1): How many times to repeat adapter removal.
+    keep_trimmed_only: false # bool(false): Discard reads with no adapters found.
+    adapters_anywhere_file: "/data/genome/virus/sars_cov_2/adapters/artic_v4.fa" # null/str: Fasta file path with adapters to be matched 'anywhere'.
+    adapters_3_end_file: null # null/str: Fasta file path with adapters to be matched at 3'end.
+    adapters_5_end_file: null # null/str: Fasta file path with adapters to be matched at 5'end.
+  shorten_to_length: 500 # null/int: Shorten each read to the specified length. Corresponds to the cutadapt length parameter.
+  trim_N_bases_on_ends: false # bool(false): Set to true to trim 'N' bases on ends.
+  min_length_r1: 45 # null/int: Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
+  min_length_r2: 45 # null/int: Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
+  max_length_r1: null # null/int: Discards R1 reads longer than this value.
+  max_length_r2: null # null/int: Discards R2 reads longer than this value.
+  max_n_bases: null # null/int: Removes reads with more 'N' bases than the specified number.
+  max_expected_errors: null # null/int: Discard reads whose expected number of errors exceeds this value.
 
-  # 3rd stage - post adapter trimming
-  shorten_to_length: 500 # OPT - both R1 and R2 are shortened to this length.
-  trim_N_bases_on_ends: null # OPT - trim flanking N's on both read ends.
+reads__decontamination__kraken: # Relevant only if reads->decontamination is set to kraken.
+  kraken_dir: "/data/genome/metagenome/kraken/k2_pluspf_20240112" # str: Directory with the kraken DB files. If does not exist, the workflow tries to download DB by using the basename. See https://benlangmead.github.io/aws-indexes/k2.
+  exclude_taxa_ids: [9606] # list of min 1 int([9606]): List of taxonomy IDs for excluding logic. Example: 9606 - Homo Sapiens of rank=species.
+  exclude_children: false # bool(false): Whether to exclude reads classified at more specific levels than specified taxonomy ID levels.
+  exclude_ancestors: false # bool(false): Whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
+  save_memory: true # bool(true): If true, kraken limits RAM memory usage but sacrifices speed.
+  generate_krona: false # bool(false): If true, krona is generated from kraken report.
+  krona_dir: "/data/genome/taxonomy/krona/2023-12-03/" # null/str: Directory where krona dataset is located, or where will be downloaded.
 
-  # 4th stage - Filtering
-  min_length_r1: 35 # OPT - minimum R1 read length. If R1 read is shorter, both R1 and R2 reads are discarded. The fourth step.
-  min_length_r2: 35 # OPT - minimum R2 read length. If R2 read is shorter, both R1 and R2 reads are discarded. The fourth step.
-  max_length_r1: null # OPT - maximum R1 read length. If R1 read is longer, both R1 and R2 reads are discarded. The fourth step.
-  max_length_r2: null # OPT - maximum R2 read length. If R2 read is longer, both R1 and R2 reads are discarded. The fourth step.
-  max_n_bases: 3 # OPT - Discard read if R1 or R2 has more than the specified number of N bases. The fifth step.
-  max_expected_errors: 3 # OPT - Discard read if R1 or R2 has more expected errors than this.
-
-reads__decontamination__kraken:
-  kraken_dir: "/data/genome/metagenome/kraken/k2_pluspf_20240112" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
-  exclude_taxa_ids: # list of taxonomy IDs to exclude.
-    - 9606 # Homo Sapiens
-  exclude_children: false # Whether to exclude reads classified at more specific levels than specified taxonomy ID levels.
-  exclude_ancestors: false # Whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
-  save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
+reads__deduplication__fastuniq: {} # Relevant only if reads->deduplication is set to fastuniq. There are no parameters to be defined.
 
 freyja__params:
   lineages_dir: "/data/genome/others/sars_cov_2_lineages/2024-03-19/" # Versioned directory with freyja lineages. If does not exist, will be downloaded.

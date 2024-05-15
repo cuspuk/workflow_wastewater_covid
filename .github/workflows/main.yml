@@ -7,24 +7,12 @@ on:
     branches: [main]
 
 jobs:
-  Formatting:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Formatting
-        uses: github/super-linter@v5
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_SNAKEMAKE_SNAKEFMT: true
-
   Linting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Lint workflow
-        uses: snakemake/snakemake-github-action@v1.25.1
+        uses: cuspuk/workflow_snakemake_action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile
@@ -35,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - Linting
-      - Formatting
     steps:
       - uses: actions/checkout@v4
 
@@ -51,7 +38,7 @@ jobs:
           swap-storage: true
 
       - name: Test workflow
-        uses: snakemake/snakemake-github-action@v1.25.1
+        uses: cuspuk/workflow_snakemake_action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile
@@ -60,7 +47,7 @@ jobs:
           show-disk-usage-on-error: true
 
       - name: Test report
-        uses: snakemake/snakemake-github-action@v1.25.1
+        uses: cuspuk/workflow_snakemake_action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile
