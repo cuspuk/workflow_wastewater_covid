@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.6](https://github.com/cuspuk/workflow_wastewater_covid/compare/v3.0.5...v3.0.6) (2024-05-15)
+
+
+### Bug Fixes
+
+* after repo transfer ([d740258](https://github.com/cuspuk/workflow_wastewater_covid/commit/d74025827d4a30e7962669d026125f4f041d5e6f))
+
 ## [3.0.5](https://github.com/xsitarcik/wastewater_covid/compare/v3.0.4...v3.0.5) (2024-05-10)
 
 
