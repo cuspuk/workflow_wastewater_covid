@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/cuspuk/workflow_wastewater_covid/compare/v3.0.6...v3.1.0) (2025-01-07)
+
+
+### Features
+
+* freezing to a stable HPC version. Freyja updated, csv to feather ([2fcc116](https://github.com/cuspuk/workflow_wastewater_covid/commit/2fcc116527953c37d0049a5566191886756b3d1e))
+
 ## [3.0.6](https://github.com/cuspuk/workflow_wastewater_covid/compare/v3.0.5...v3.0.6) (2024-05-15)
 
 
