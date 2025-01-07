@@ -8,7 +8,7 @@ include: "rules/common.smk"
 
 module reads_workflow:
     snakefile:
-        github("cuspuk/workflow_reads", path="workflow/Snakefile", tag="v3.4.5")
+        github("cuspuk/workflow_reads", path="workflow/Snakefile", tag="v3.4.5") # NOTE this should stay frozen to prevent breaking changes of python 3.11 in HPC
     config:
         config
 

@@ -23,7 +23,7 @@ rule custom__infer_read_group:
         "logs/custom/infer_and_store_read_group/{sample}.log",
     localrule: True
     wrapper:
-        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.12/wrappers/custom/read_group"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.14.3/wrappers/custom/read_group"
 
 
 rule bwa__map_reads_to_reference:
@@ -38,6 +38,8 @@ rule bwa__map_reads_to_reference:
         mem_mb=get_mem_mb_for_mapping,
     log:
         "logs/bwa/map_reads_to_reference/{sample}.log",
+    benchmark:
+        "benchmarks/bwa/map_reads_to_reference/{sample}.benchmark"
     wrapper:
         "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.12/wrappers/bwa/map"
 
@@ -55,7 +57,7 @@ rule samtools__bam_index:
     log:
         "logs/samtools/bam_index/mapped/{sample}.log",
     wrapper:
-        "v3.10.2/bio/samtools/index"
+        "v4.7.0/bio/samtools/index"
 
 
 rule picard__mark_duplicates:
@@ -73,7 +75,7 @@ rule picard__mark_duplicates:
     benchmark:
         "benchmarks/picard/mark_duplicates/{sample}.benchmark"
     wrapper:
-        "v3.10.2/bio/picard/markduplicates"
+        "v4.7.0/bio/picard/markduplicates"
 
 
 checkpoint samtools__view_number_of_reads:
