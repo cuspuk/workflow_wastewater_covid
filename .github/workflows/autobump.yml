@@ -21,13 +21,14 @@ jobs:
         uses: snakemake/snakedeploy-github-action@v1.0.3
         with:
           subcommand: update-conda-envs
-          args: workflow/envs/*.yaml
+          args: workflow/envs/freyja.yaml
 
-      - name: Update snakemake wrappers
-        uses: snakemake/snakedeploy-github-action@v1.0.3
-        with:
-          subcommand: update-snakemake-wrappers
-          args: workflow/rules/*.smk
+      # NOTE Disabling auto updates to prevent breaking changes of python 3.13 in HPC
+      # - name: Update snakemake wrappers
+      #   uses: snakemake/snakedeploy-github-action@v1.0.3
+      #   with:
+      #     subcommand: update-snakemake-wrappers
+      #     args: workflow/rules/*.smk
 
       # Make changes to pull request here
       - name: Create Pull Request

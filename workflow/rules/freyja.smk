@@ -32,7 +32,7 @@ rule freyja__variants:
 rule freyja__update_lineages:
     output:
         lineages=protected("{prefix_dir}/curated_lineages.json"),
-        barcodes=protected("{prefix_dir}/usher_barcodes.csv"),
+        barcodes=protected("{prefix_dir}/usher_barcodes.feather"),
     params:
         outdir=lambda wildcards, output: os.path.dirname(output.lineages),
     conda:
@@ -48,7 +48,7 @@ rule freyja__demix:
         variants="results/freyja/{sample}/variants.tsv",
         depths="results/freyja/{sample}/freyja.depth",
         lineages=os.path.join(config["freyja__params"]["lineages_dir"], "curated_lineages.json"),
-        barcodes=os.path.join(config["freyja__params"]["lineages_dir"], "usher_barcodes.csv"),
+        barcodes=os.path.join(config["freyja__params"]["lineages_dir"], "usher_barcodes.feather"),
     output:
         "results/freyja/{sample}/freyja.demix",
     params:
