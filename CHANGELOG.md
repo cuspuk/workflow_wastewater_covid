@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/cuspuk/workflow_wastewater_covid/compare/v3.1.0...v3.1.1) (2025-01-07)
+
+
+### Bug Fixes
+
+* downgraded picard ([d727eaf](https://github.com/cuspuk/workflow_wastewater_covid/commit/d727eaf18ca7d93ff11b12cc2ba88ce61a3f392f))
+
 ## [3.1.0](https://github.com/cuspuk/workflow_wastewater_covid/compare/v3.0.6...v3.1.0) (2025-01-07)
 
 
